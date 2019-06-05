@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     String phone, name;
     EditText textBox;
     EditText phoneNumber;
+    EditText sendList;
     private static final int RESULT_PICK_CONTACT = 1234;
 
 
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
             phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             phoneNumber.setText(phone);
+            sendList.setText("Name : "+name+"\n"+"Phone No. : "+phone);
+
            /* Log.e("permission", "ContactPicked NAME: " + name);
             Log.e("permission", "ContactPicked NUMBER: " + phone);*/
         } catch (Exception e) {
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         phoneNumber = (EditText) findViewById(R.id.editText);
+        sendList=(EditText)findViewById(R.id.sentList);
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkPermission()) {
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     if(checkPermission()) {
 
 //Get the default SmsManager//
-                        if((phoneNum.length()>=10)&&(phoneNum.length()<=16))
+                        if((phoneNum.length()>=10)&&(phoneNum.length()<=17))
                         {
                         try {
                             SmsManager smsManager = SmsManager.getDefault();
