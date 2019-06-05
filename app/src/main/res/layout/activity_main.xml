@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginRight="0dp"
     android:background="@drawable/ic_launcher_background"
     tools:context="MainActivity">
 
@@ -13,21 +14,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="SMS TEST"
-        android:textSize="30dp"
+        android:textSize="20sp"
         android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_alignEnd="@+id/textView1"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="-52dp"
-        android:layout_marginRight="-52dp"
-        android:textColor="#ff87ff09"
-        android:textSize="30dp" />
 
 
     <EditText
@@ -39,7 +27,7 @@
         android:hint="Enter Phone Number"
         android:phoneNumber="true"
         android:textColorHint="@color/abc_primary_text_material_dark"
-        android:textSize="20sp" />
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/editText2"
@@ -52,41 +40,29 @@
         android:layout_alignRight="@+id/textView1"
         android:hint="Message"
         android:textColorHint="@color/abc_primary_text_material_dark"
-        android:textSize="20sp" />
+        android:textSize="15sp" />
 
     <Button
         android:id="@+id/btnSendSMS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ldContacts"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_below="@id/editText2"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="0dp"
+        android:layout_toRightOf="@+id/ldContacts"
         android:text="Send SMS"
-        android:textSize="15sp" />
+        android:textSize="10sp" />
 
     <Button
         android:id="@+id/ldContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="85dp"
+        android:layout_marginTop="5dp"
         android:text="Load Contacts"
-        android:textSize="15sp" />
+        android:textSize="10sp" />
 
-    <ListView
-        android:id="@+id/listview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/searchBox"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/background_light" />
 
-    <EditText
-        android:id="@+id/searchBox"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSendSMS"
-        android:background="@android:color/background_light"
-        android:hint="Search..." />
+
 </RelativeLayout>

@@ -1,9 +1,11 @@
 package com.hfad.smstest;
 import android.app.Activity;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,7 +14,8 @@ import android.os.Bundle;
 import android.os.Build;
 import android.widget.Button;
 import android.database.Cursor;
-import android.provider.ContactsContract;
+import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.support.v4.content.ContextCompat;
 import android.net.Uri;
 import android.content.Intent;
@@ -36,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter ;
     Button contactsButton;
     Cursor cursor ;
-    String name, contactNumber,temp="";
+    String phone, name;
     EditText textBox;
+    EditText phoneNumber;
+    private static final int RESULT_PICK_CONTACT = 1234;
+
+
 
     public static void hideKeyboard(Activity activity) {                       //TO HIDE KEYBOARD DURING FOCUS CHANGE
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -49,13 +56,44 @@ public class MainActivity extends AppCompatActivity {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RESULT_PICK_CONTACT:
+                    contactPicked(data);
+                    break;
+            }
+        } else {
+            Log.e("permission", "Failed to pick contact");
+        }
+    }
+    public void clickPickContacts(View v)
+    {
+        Intent cp = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        startActivityForResult(cp, RESULT_PICK_CONTACT);
+    }
+    private void contactPicked(Intent data) {
+        Cursor cursor = null;
+        try {
+            Uri uri = data.getData();
+            cursor = getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            phoneNumber.setText(phone);
+           /* Log.e("permission", "ContactPicked NAME: " + name);
+            Log.e("permission", "ContactPicked NUMBER: " + phone);*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final EditText phoneNumber = (EditText) findViewById(R.id.editText);
+        phoneNumber = (EditText) findViewById(R.id.editText);
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkPermission()) {
@@ -65,67 +103,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        listView = (ListView)findViewById(R.id.listview);
-        contactsArray = new ArrayList<String>();
         contactsButton = (Button)findViewById(R.id.ldContacts);
         contactsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideKeyboard(MainActivity.this);
 
-                AddContactstoArray();
+                clickPickContacts(v);
 
-//Initialize ArrayAdapter and declare that we’re converting Strings into Views//
-
-                arrayAdapter = new ArrayAdapter<String>(
-                        MainActivity.this,
-
-//Specify the XML file where you’ve defined the layout for each item//
-
-                        R.layout.contact_listview, R.id.textView,
-
-//The array of data//
-
-                        contactsArray
-                );
-
-//Set the Adapter to the ListView, using setAdapter()//
-
-                listView.setAdapter(arrayAdapter);
 
             }
-
-        });
-        listView.setOnItemClickListener(new OnItemClickListener()
-        {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                String temp1=contactsArray.get(position);
-                String temp2=temp1.substring(temp1.indexOf(':')+1,temp1.length());
-                phoneNumber.setText(temp2);
-            }
-        });
-        textBox=(EditText)findViewById(R.id.searchBox);
-        textBox.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                arrayAdapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
+            });
 
         final EditText smsText = (EditText) findViewById(R.id.editText2);
         sendSMS = (Button) findViewById(R.id.btnSendSMS);
@@ -164,34 +152,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void AddContactstoArray(){
 
-//Query the phone number table using the URI stored in CONTENT_URI/
 
-        cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
-
-        while (cursor.moveToNext()) {
-
-//Get the display name for each contact//
-
-            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-
-//Get the phone number for each contact//
-
-            contactNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-//Add each display name and phone number to the Array//
-
-            if(temp.equals(contactNumber)==false)
-            {
-                contactsArray.add(name + " " + ":" + contactNumber);
-            }
-            temp=contactNumber;
-        }
-
-        cursor.close();
-
-    }
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS);
         int ContactPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS);
