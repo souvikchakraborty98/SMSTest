@@ -3,23 +3,14 @@ import android.app.Activity;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView.OnItemClickListener;
 import android.os.Bundle;
 import android.os.Build;
 import android.widget.Button;
 import android.database.Cursor;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.support.v4.content.ContextCompat;
 import android.net.Uri;
 import android.content.Intent;
-import android.widget.ListView;
 import android.widget.EditText;
 import android.util.Log;
 import android.Manifest;
@@ -28,21 +19,18 @@ import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 import android.view.View;
-import java.util.ArrayList;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    private Button sendSMS;
-    ListView listView ;
-    ArrayList<String> contactsArray ;
-    ArrayAdapter<String> arrayAdapter ;
     Button contactsButton;
-    Cursor cursor ;
     String phone, name;
-    EditText textBox;
     EditText phoneNumber;
     EditText sendList;
+    EditText smsText;
     private static final int RESULT_PICK_CONTACT = 1234;
 
 
@@ -75,11 +63,17 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(cp, RESULT_PICK_CONTACT);
     }
     private void contactPicked(Intent data) {
-        Cursor cursor = null;
+        Cursor cursor;
         try {
             Uri uri = data.getData();
             cursor = getContentResolver().query(uri, null, null, null, null);
-            cursor.moveToFirst();
+            try {
+                cursor.moveToFirst();
+            }
+            catch(Exception e)
+            {
+                Log.e("permission","e");
+            }
             phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             phoneNumber.setText(phone);
@@ -94,6 +88,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SmsReceiver.bindListener(new SmsListener() {
+            @Override
+            public void messageReceived(String messageText) {
+
+                //From the received text string you may do string operations to get the required OTP
+                //It depends on your SMS format
+                Log.e("Message",messageText);
+                smsText.setText(messageText);
+               // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
+
+              /*  // If your OTP is six digits number, you may use the below code
+
+                Pattern pattern = Pattern.compile(OTP_REGEX);
+                Matcher matcher = pattern.matcher(messageText);
+                String otp;
+                while (matcher.find())
+                {
+                    otp = matcher.group();
+                }
+
+                Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();*/
+
+            }
+        });
         setContentView(R.layout.activity_main);
 
         phoneNumber = (EditText) findViewById(R.id.editText);
@@ -119,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
             }
             });
 
-        final EditText smsText = (EditText) findViewById(R.id.editText2);
-        sendSMS = (Button) findViewById(R.id.btnSendSMS);
+        smsText = (EditText) findViewById(R.id.editText2);
+        Button sendSMS = (Button) findViewById(R.id.btnSendSMS);
         sendSMS.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -161,7 +179,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS);
         int ContactPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS);
-        if ((result == PackageManager.PERMISSION_GRANTED)&&(ContactPermissionResult==PackageManager.PERMISSION_GRANTED)) {
+        int readsms = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_SMS);
+        int recsms = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECEIVE_SMS);
+        if ((result == PackageManager.PERMISSION_GRANTED)&&(ContactPermissionResult==PackageManager.PERMISSION_GRANTED)&&(readsms == PackageManager.PERMISSION_GRANTED)&&(recsms == PackageManager.PERMISSION_GRANTED)) {
             return true;
         } else {
             return false;
@@ -169,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_CODE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS,Manifest.permission.RECEIVE_SMS}, PERMISSION_REQUEST_CODE);
 
     }
 
@@ -177,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&  grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&  grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED && grantResults[3] == PackageManager.PERMISSION_GRANTED) {
 
                     Toast.makeText(MainActivity.this,
                             "Permission accepted", Toast.LENGTH_LONG).show();
