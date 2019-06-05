@@ -1,88 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginRight="0dp"
-    android:background="@drawable/ic_launcher_background"
-    tools:context="MainActivity">
+    android:id="@+id/scrollLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="SMS TEST"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/relLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="0dp"
+        android:background="@drawable/ic_launcher_background"
+        tools:context="MainActivity">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="SMS TEST"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
-        android:hint="Enter Phone Number"
-        android:phoneNumber="true"
-        android:textColorHint="@color/abc_primary_text_material_dark"
-        android:textSize="25sp" />
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_centerHorizontal="true"
+            android:hint="Enter Phone Number To Send To"
+            android:phoneNumber="true"
+            android:textColorHint="@color/abc_primary_text_material_dark"
+            android:textSize="25sp" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignEnd="@+id/textView1"
-        android:layout_alignRight="@+id/textView1"
-        android:hint="Message"
-        android:textColorHint="@color/abc_primary_text_material_dark"
-        android:textSize="25sp" />
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText"
+            android:layout_alignStart="@+id/editText"
+            android:layout_alignLeft="@+id/editText"
+            android:layout_alignEnd="@+id/textView1"
+            android:layout_alignRight="@+id/textView1"
+            android:hint="Message"
+            android:textColorHint="@color/abc_primary_text_material_dark"
+            android:textSize="25sp" />
 
-    <Button
-        android:id="@+id/btnSendSMS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ldContacts"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:text="Send SMS"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/btnSendSMS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ldContacts"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="Send SMS"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/ldContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="15dp"
-        android:text="Load Contacts"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/ldContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="15dp"
+            android:text="Load Contacts"
+            android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/toSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSendSMS"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/background_light"
-        android:text="Sending To:-"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/toSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSendSMS"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/background_light"
+            android:text="Sending To:-"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/sentList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toSend"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/background_light"
-        android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        <EditText
+            android:id="@+id/sentList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toSend"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/background_light"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/sentFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sentList"
+            android:layout_marginTop="50dp"
+            android:background="@android:color/background_light"
+            android:text="Sending From:-"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/sendFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sentFrom"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/background_light"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/numToSendFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sendFrom"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:hint="Enter Phone Number To Send From"
+            android:phoneNumber="true"
+            android:textColorHint="@color/abc_primary_text_material_dark"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/ldContacts2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/numToSendFrom"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="15dp"
+            android:text="Load Contacts"
+            android:textSize="20sp" />
+    </RelativeLayout>
+</ScrollView>

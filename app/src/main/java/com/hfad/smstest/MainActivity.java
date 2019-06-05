@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.os.Bundle;
 import android.os.Build;
@@ -17,6 +18,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.view.View;
 
@@ -27,13 +30,49 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     Button contactsButton;
-    String phone, name;
+    Button contactsButton2;
+    public String phone, name ;
+    public static String setNum;
     EditText phoneNumber;
+    EditText phoneNumber2;
     EditText sendList;
+    EditText sendList2;
     EditText smsText;
+    boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
 
+    public String makenum(String s)
+    {
+        String seq="+91";
+        String news="";
+        String newss="";
+        if(s.contains(seq)==true)
+        {
+            news=s.substring(4,s.length());
 
+            for(int i=0;i<news.length();i++)
+            {
+                if(Character.isDigit(news.charAt(i))==true)
+                {
+                    newss=newss+news.charAt(i);
+                }
+            }
+        }
+        else if(s.contains(seq)==false)
+        {
+            news=s;
+            for(int i=0;i<news.length();i++)
+            {
+                if(Character.isDigit(news.charAt(i))==true)
+                {
+                    newss=newss+news.charAt(i);
+                }
+            }
+        }
+        newss=seq+newss;
+        Log.e("methodmakenum", newss );
+        return newss;
+    }
 
     public static void hideKeyboard(Activity activity) {                       //TO HIDE KEYBOARD DURING FOCUS CHANGE
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -76,8 +115,21 @@ public class MainActivity extends AppCompatActivity {
             }
             phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            phoneNumber.setText(phone);
-            sendList.setText("Name : "+name+"\n"+"Phone No. : "+phone);
+            if(sendto==true) {
+                phoneNumber.setText(phone);
+                sendList.setText("Name : " + name + "\n" + "Phone No. : " + phone);
+                sendto=false;
+            }
+            if(sendfrom==true)
+            {
+                phoneNumber2.setText(phone);
+                sendList2.setText("Name : " + name + "\n" + "Phone No. : " + phone);
+                Log.e("phone",phone );
+                setNum=makenum(phone);
+                Log.e("setnum",setNum);
+                sendfrom=false;
+            }
+
 
            /* Log.e("permission", "ContactPicked NAME: " + name);
             Log.e("permission", "ContactPicked NUMBER: " + phone);*/
@@ -88,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sendfrom=false;
+        sendto=false;
+        //TODO - HIDE KEYBOARD WHILE SCROLLING FAILING
+      /*  ScrollView layout = (ScrollView) findViewById(R.id.scrollLayout);
+      layout.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev)
+            {
+                hideKeyboard(MainActivity.this);
+                return false;
+            }
+        });*/
         SmsReceiver.bindListener(new SmsListener() {
             @Override
             public void messageReceived(String messageText) {
@@ -96,6 +161,35 @@ public class MainActivity extends AppCompatActivity {
                 //It depends on your SMS format
                 Log.e("Message",messageText);
                 smsText.setText(messageText);
+
+                hideKeyboard(MainActivity.this);
+                String sms = smsText.getText().toString();
+                String phoneNum = phoneNumber.getText().toString();
+                if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
+                    if(checkPermission()) {
+
+//Get the default SmsManager//
+                        if((phoneNum.length()>=10)&&(phoneNum.length()<=17))
+                        {
+                            try {
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(phoneNum, null, sms, null, null);
+                                Toast.makeText(MainActivity.this, "SMS Sent", Toast.LENGTH_SHORT).show();
+                            }
+                            catch (Exception e)
+                            {
+                                Toast.makeText(MainActivity.this, "SMS NOT SENT. TRY AGAIN.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(MainActivity.this, "DOMESTIC CALLS ONLY", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else {
+                        Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
                // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
 
               /*  // If your OTP is six digits number, you may use the below code
@@ -112,10 +206,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         setContentView(R.layout.activity_main);
 
         phoneNumber = (EditText) findViewById(R.id.editText);
+        phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
+
         sendList=(EditText)findViewById(R.id.sentList);
+        sendList2=(EditText)findViewById(R.id.sendFrom);
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkPermission()) {
@@ -130,12 +228,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hideKeyboard(MainActivity.this);
-
+                sendto=true;
                 clickPickContacts(v);
 
 
             }
-            });
+        });
+
+        contactsButton2= (Button) findViewById(R.id.ldContacts2);
+        contactsButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(MainActivity.this);
+                sendfrom=true;
+                clickPickContacts(v);
+
+
+            }
+        });
+
+
 
         smsText = (EditText) findViewById(R.id.editText2);
         Button sendSMS = (Button) findViewById(R.id.btnSendSMS);
