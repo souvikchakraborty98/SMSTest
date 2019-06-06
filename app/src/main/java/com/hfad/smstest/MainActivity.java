@@ -43,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
     public String makenum(String s)
     {
-        String seq="+91";
+        String seq1="+91";
+        String seq2="91";
         String news="";
         String newss="";
-        if(s.contains(seq)==true)
+        if(s.contains(seq1)==true)
         {
-            news=s.substring(4,s.length());
+            news=s.substring(3,s.length());
 
             for(int i=0;i<news.length();i++)
             {
@@ -58,7 +59,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        else if(s.contains(seq)==false)
+        else if(s.indexOf(seq2)==0)
+        {
+            news=s.substring(2,s.length());
+
+            for(int i=0;i<news.length();i++)
+            {
+                if(Character.isDigit(news.charAt(i))==true)
+                {
+                    newss=newss+news.charAt(i);
+                }
+            }
+        }
+        else if(s.contains(seq1)==false)
         {
             news=s;
             for(int i=0;i<news.length();i++)
@@ -69,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        newss=seq+newss;
+        newss=seq1+newss;
         Log.e("methodmakenum", newss );
         return newss;
     }
@@ -93,7 +106,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         } else {
+            sendto=false;
+           sendfrom=false;
+           // Log.e("sendsto onACT",String.valueOf(sendto) );
+          // Log.e("sendsfrom onACT",String.valueOf(sendfrom) );
             Log.e("permission", "Failed to pick contact");
+
         }
     }
     public void clickPickContacts(View v)
@@ -111,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
             }
             catch(Exception e)
             {
+                sendto=false;
+                sendfrom=false;
                 Log.e("permission","e");
             }
             phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -129,12 +149,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("setnum",setNum);
                 sendfrom=false;
             }
-
+          /*  Log.e("sendsto contktpickd",Boolean.toString(sendto) );
+            Log.e("sendsfrom contktpickd",Boolean.toString(sendfrom) );*/
 
            /* Log.e("permission", "ContactPicked NAME: " + name);
             Log.e("permission", "ContactPicked NUMBER: " + phone);*/
         } catch (Exception e) {
             e.printStackTrace();
+            sendto=false;
+            sendfrom=false;
         }
     }
     @Override
