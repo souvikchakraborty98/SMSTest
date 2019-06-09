@@ -130,10 +130,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/numToSendFrom"
-            android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="15dp"
             android:text="Load Contacts"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/getSender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/numToSendFrom"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@id/ldContacts2"
+            android:text="RECENT SENDERS"
             android:textSize="20sp" />
     </RelativeLayout>
 </ScrollView>

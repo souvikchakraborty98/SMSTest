@@ -13,7 +13,7 @@ public class SmsReceiver extends BroadcastReceiver {
         {
             MainActivity getData=new MainActivity();
             setnumm=getData.setNum;
-            Log.e("getdatasetnum our for","" + setnumm);
+           // Log.e("getdatasetnum our for","" + setnumm);
         }
     //interface
     private static SmsListener mListener;
@@ -28,7 +28,7 @@ public class SmsReceiver extends BroadcastReceiver {
             SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdus[i]);
 
             String sender = smsMessage.getDisplayOriginatingAddress();
-            Log.e("Permission", sender);
+            Log.e("Sender", sender);
             //Check the sender to filter messages which we require to read
 
             Log.e("getdata setnum","" + setnumm);
@@ -37,6 +37,7 @@ public class SmsReceiver extends BroadcastReceiver {
             {
 
                 String messageBody = smsMessage.getMessageBody();
+                Log.e("message","" + messageBody);
 
                 //Pass the message text to interface
                 mListener.messageReceived(messageBody);

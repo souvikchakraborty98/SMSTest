@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 import android.view.View;
 
+import java.security.spec.ECField;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,15 +32,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 1;
     Button contactsButton;
     Button contactsButton2;
+    Button ldSenders;
     public String phone, name ;
     public static String setNum;
     EditText phoneNumber;
-    EditText phoneNumber2;
+    public static EditText phoneNumber2;
     EditText sendList;
-    EditText sendList2;
+    public static EditText sendList2;
     EditText smsText;
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
+    public static int ldSendersFlag=0;
 
     public String makenum(String s)
     {
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         newss=seq1+newss;
-        Log.e("methodmakenum", newss );
+       // Log.e("methodmakenum", newss );
         return newss;
     }
 
@@ -144,9 +147,9 @@ public class MainActivity extends AppCompatActivity {
             {
                 phoneNumber2.setText(phone);
                 sendList2.setText("Name : " + name + "\n" + "Phone No. : " + phone);
-                Log.e("phone",phone );
+               // Log.e("phone",phone );
                 setNum=makenum(phone);
-                Log.e("setnum",setNum);
+               // Log.e("setnum",setNum);
                 sendfrom=false;
             }
           /*  Log.e("sendsto contktpickd",Boolean.toString(sendto) );
@@ -163,8 +166,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         sendfrom=false;
         sendto=false;
+
+        phoneNumber = (EditText) findViewById(R.id.editText);
+        phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
+
+        sendList=(EditText)findViewById(R.id.sentList);
+        sendList2=(EditText)findViewById(R.id.sendFrom);
+
         //TODO - HIDE KEYBOARD WHILE SCROLLING FAILING
       /*  ScrollView layout = (ScrollView) findViewById(R.id.scrollLayout);
       layout.setOnTouchListener(new View.OnTouchListener()
@@ -176,22 +187,40 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });*/
-        SmsReceiver.bindListener(new SmsListener() {
+      if(ldSendersFlag==1) {
+          try {
+              Bundle extras = getIntent().getExtras();
+              String savedExtra = extras.getString("savedExtra");
+              String phno = extras.getString("phonenumber");
+              String sndlist = extras.getString("sendlist");
+              phoneNumber.setText(phno);
+              sendList.setText(sndlist);
+              //  Log.e("savedExtra",savedExtra );
+              phoneNumber2.setText(savedExtra);
+              setNum = savedExtra;
+              sendList2.setText("Name : " + savedExtra + "\n" + "Phone No. : null");
+              phoneNumber2.requestFocus();
+              ldSendersFlag = 0;
+          }
+          catch (Exception e)
+          {
+              ldSendersFlag = 0;
+          }
+      }
+
+      SmsReceiver.bindListener(new SmsListener() {
             @Override
             public void messageReceived(String messageText) {
-
-                //From the received text string you may do string operations to get the required OTP
-                //It depends on your SMS format
-                Log.e("Message",messageText);
                 smsText.setText(messageText);
-
+                Log.e("getdata setnum","" + messageText);
                 hideKeyboard(MainActivity.this);
+                if((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())==false)
+                {
                 String sms = smsText.getText().toString();
                 String phoneNum = phoneNumber.getText().toString();
                 if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
                     if(checkPermission()) {
 
-//Get the default SmsManager//
                         if((phoneNum.length()>=10)&&(phoneNum.length()<=17))
                         {
                             try {
@@ -213,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
                     }
                 }
+                //TODO OTP EXTRACTION
                // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
 
               /*  // If your OTP is six digits number, you may use the below code
@@ -228,11 +258,16 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();*/
 
             }
+            else
+                {
+                    Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
-        setContentView(R.layout.activity_main);
 
-        phoneNumber = (EditText) findViewById(R.id.editText);
+
+       phoneNumber = (EditText) findViewById(R.id.editText);
         phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
 
         sendList=(EditText)findViewById(R.id.sentList);
@@ -270,6 +305,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ldSenders = (Button)findViewById(R.id.getSender);
+        ldSenders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(MainActivity.this);
+                Intent myIntent = new Intent(getBaseContext(),   recentSMS.class);
+                Bundle extras = new Bundle();
+                extras.putString("phonenumber",phoneNumber.getText().toString());
+                extras.putString("sendlist",sendList.getText().toString());
+                myIntent.putExtras(extras);
+                ldSendersFlag=1;
+                startActivity(myIntent);
+                finish();
+            }
+        });
+
 
 
         smsText = (EditText) findViewById(R.id.editText2);
@@ -279,12 +330,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideKeyboard(MainActivity.this);
+                if((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())==false)
+                {
                 String sms = smsText.getText().toString();
                 String phoneNum = phoneNumber.getText().toString();
                 if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
                     if(checkPermission()) {
 
-//Get the default SmsManager//
                         if((phoneNum.length()>=10)&&(phoneNum.length()<=17))
                         {
                         try {
@@ -305,9 +357,18 @@ public class MainActivity extends AppCompatActivity {
                     }else {
                         Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
                     }
+                }}
+                else
+                {
+                    Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+
+
+
+
     }
 
 
