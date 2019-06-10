@@ -15,11 +15,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+
 public class recentSMS extends AppCompatActivity {
     ArrayList<String> senderList = new ArrayList<String>();
     String temp1;
     String phno;
     String sndlist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class recentSMS extends AppCompatActivity {
                         msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
                         //Log.e("messages", msgData);
                         senderID = (msgData.substring((msgData.indexOf("address:") + 8), msgData.indexOf("person:"))).trim();
-                        if(Character.isDigit(senderID.charAt(1))==false)
+                        if((Character.isDigit(senderID.charAt(1))==false) && (Character.isUpperCase(senderID.charAt(1))==true))
                         senderID = senderID.substring(0,2)+"-"+senderID.substring(2);
                         senderList.add(senderID);
                        /* if (senderID.equals("A$AIRACT"))
@@ -60,7 +62,7 @@ public class recentSMS extends AppCompatActivity {
                         try{
                             if(msgData.indexOf("address:")>=0) {
                                 senderID = (msgData.substring((msgData.indexOf("address:") + 8))).trim();
-                                if(Character.isDigit(senderID.charAt(1))==false)
+                                if((Character.isDigit(senderID.charAt(1))==false) && (Character.isUpperCase(senderID.charAt(1))==true))
                                 senderID = senderID.substring(0,2)+"-"+senderID.substring(2);
                                 senderList.add(senderID);
                                 //Log.e("messages sender v2", senderID);
@@ -92,6 +94,7 @@ public class recentSMS extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listview);
         arrayAdapter = new ArrayAdapter<String>(recentSMS.this, R.layout.contact_listview, R.id.textView, senderList);
         listView.setAdapter(arrayAdapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {

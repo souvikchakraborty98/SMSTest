@@ -18,14 +18,12 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 import android.view.View;
-
 import java.security.spec.ECField;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -169,10 +167,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sendfrom=false;
         sendto=false;
-
         phoneNumber = (EditText) findViewById(R.id.editText);
         phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
-
         sendList=(EditText)findViewById(R.id.sentList);
         sendList2=(EditText)findViewById(R.id.sendFrom);
 
