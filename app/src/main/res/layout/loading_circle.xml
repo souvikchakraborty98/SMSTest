@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loadingCircle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_launcher_background"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/textView123"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="SMS TEST"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:progressDrawable="@drawable/circular_progress_bar" />
+
+    <TextView
+        android:id="@+id/textView1234"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressbar"
+        android:layout_centerHorizontal="true"
+        android:text="Please Wait.."
+        android:textSize="30sp"
+        android:textStyle="bold" />
+</RelativeLayout>
