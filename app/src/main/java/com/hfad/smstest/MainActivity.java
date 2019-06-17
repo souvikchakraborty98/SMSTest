@@ -1,4 +1,5 @@
 package com.hfad.smstest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
@@ -18,6 +19,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.view.View;
 import java.security.spec.ECField;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     Button contactsButton;
     Button contactsButton2;
     Button ldSenders;
+    Button sendSMS;
     public String phone, name ;
     public static String setNum;
     EditText phoneNumber;
@@ -161,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             sendfrom=false;
         }
     }
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
         sendList=(EditText)findViewById(R.id.sentList);
         sendList2=(EditText)findViewById(R.id.sendFrom);
 
-        //TODO - HIDE KEYBOARD WHILE SCROLLING FAILING
-      /*  ScrollView layout = (ScrollView) findViewById(R.id.scrollLayout);
+
+        ScrollView layout = (ScrollView) findViewById(R.id.scrollLayout);
       layout.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -182,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 hideKeyboard(MainActivity.this);
                 return false;
             }
-        });*/
+        });
       if(ldSendersFlag==1) {
           try {
               Bundle extras = getIntent().getExtras();
@@ -320,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         smsText = (EditText) findViewById(R.id.editText2);
-        Button sendSMS = (Button) findViewById(R.id.btnSendSMS);
+        sendSMS = (Button) findViewById(R.id.btnSendSMS);
         sendSMS.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -397,9 +401,10 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this,
                             "Permission denied", Toast.LENGTH_LONG).show();
-                    Button sendSMS = (Button) findViewById(R.id.btnSendSMS);
                     sendSMS.setEnabled(false);
                     contactsButton.setEnabled(false);
+                    contactsButton2.setEnabled(false);
+                    ldSenders.setEnabled(false);
 
                 }
                 break;
@@ -411,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed()
     {
         if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
-        else Toast.makeText(getBaseContext(), "Tap once more and we will be out of your hair!", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(getBaseContext(), "Stop Service? Press Back Again To Confirm.", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
 
