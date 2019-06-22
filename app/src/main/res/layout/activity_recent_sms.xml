@@ -20,9 +20,10 @@
 
     <ListView
         android:id="@+id/listview"
+        style="@android:style/Widget.DeviceDefault.ExpandableListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView12"
         android:layout_centerHorizontal="true"
-        android:background="@android:color/background_light" />
+        android:background="#5C968D" />
 </RelativeLayout>

@@ -91,12 +91,13 @@ public class recentSMS extends AppCompatActivity {
                     for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
                         try {
                             msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
-                            //Log.e("messages", msgData);
+                            //Log.e("original", senderID);
                             senderID = (msgData.substring((msgData.indexOf("address:") + 8), msgData.indexOf("person:"))).trim();
                             if ((Character.isDigit(senderID.charAt(1)) == false) && (Character.isUpperCase(senderID.charAt(1)) == true)&& (senderID.charAt(2)!='-')) {
                                 senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                             }
-                            else if ((Character.isDigit(senderID.charAt(1)))==false && (Character.isLetter(senderID.charAt(1)))==false && (Character.isWhitespace(senderID.charAt(1)))==false)
+                            else if ((Character.isDigit(senderID.charAt(1)))==false && (Character.isLetter(senderID.charAt(1)))==false && (Character.isWhitespace(senderID.charAt(1)))==false && (senderID.charAt(2)!='-'))
+
                             {
                                 senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                             }
@@ -115,12 +116,12 @@ public class recentSMS extends AppCompatActivity {
                                     {
                                         senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                                     }
-                                    else if ((Character.isDigit(senderID.charAt(1)))==false && (Character.isLetter(senderID.charAt(1)))==false && (Character.isWhitespace(senderID.charAt(1)))==false)
+                                    else if ((Character.isDigit(senderID.charAt(1)))==false && (Character.isLetter(senderID.charAt(1)))==false && (Character.isWhitespace(senderID.charAt(1)))==false && (senderID.charAt(2)!='-'))
                                     {
                                         senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                                     }
                                     senderList.add(senderID);
-                                    //Log.e("messages sender v2", senderID);
+                                   // Log.e("messages sender v2", senderID);
                          /*   if (senderID.equals("A$AIRACT"))
                             {
                                 f=1;
