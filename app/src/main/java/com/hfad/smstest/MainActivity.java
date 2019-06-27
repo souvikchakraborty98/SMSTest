@@ -1,6 +1,8 @@
 package com.hfad.smstest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.net.Uri;
 import android.content.Intent;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.util.Log;
 import android.Manifest;
@@ -20,6 +23,8 @@ import android.content.pm.PackageManager;
 import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.widget.ScrollView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
 import java.security.spec.ECField;
@@ -44,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
     public static int ldSendersFlag=0;
+    Switch sb;
+    TextView sim;
+    int simNum;
+    SharedPreferences prefs;
 
     public String makenum(String s)
     {
@@ -175,8 +184,44 @@ public class MainActivity extends AppCompatActivity {
         phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
         sendList=(EditText)findViewById(R.id.sentList);
         sendList2=(EditText)findViewById(R.id.sendFrom);
+        sim=(TextView)findViewById(R.id.SIM);
+        sb = (Switch) findViewById(R.id.sim_switch);
+        sb.setTextOff("SIM 2");
+        sb.setTextOn("SIM 1");
+        prefs = getSharedPreferences("com.hfad.smstest", 0);
+        String simVariable = prefs.getString("simSubID", "SIM 1");
+        Log.e("sim id", simVariable);
 
+        prefs = getSharedPreferences("com.hfad.smstest", Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
 
+        if(ldSendersFlag!=1)
+        {
+            if(simVariable.equals("SIM 1"))
+            {
+                sb.setChecked(true);
+                sim.setText(simVariable);
+            }
+            else if(simVariable.equals("SIM 2"))
+            {
+                sb.setChecked(false);
+                sim.setText(simVariable);
+            }
+        }
+
+        sb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    sim.setText("SIM 1");
+                    editor.putString("simSubID", "SIM 1");
+                    editor.commit();
+                } else {
+                    sim.setText("SIM 2");
+                    editor.putString("simSubID", "SIM 2");
+                    editor.commit();
+                }
+            }
+        });
         ScrollView layout = (ScrollView) findViewById(R.id.scrollLayout);
       layout.setOnTouchListener(new View.OnTouchListener()
         {
@@ -193,12 +238,22 @@ public class MainActivity extends AppCompatActivity {
               String savedExtra = extras.getString("savedExtra");
               String phno = extras.getString("phonenumber");
               String sndlist = extras.getString("sendlist");
+              String simState = extras.getString("SIMSTATUS");
               phoneNumber.setText(phno);
               sendList.setText(sndlist);
               //  Log.e("savedExtra",savedExtra );
               phoneNumber2.setText(savedExtra);
               setNum = savedExtra;
               sendList2.setText("Name : " + savedExtra + "\n" + "Phone No. : null");
+              if(simState.equals("SIM 1")) {
+                  sb.setChecked(true);
+                  sim.setText("SIM 1");
+              }
+              else if(simState.equals("SIM 2")) {
+                  sb.setChecked(false);
+                  sim.setText("SIM 2");
+              }
+
               phoneNumber2.requestFocus();
               ldSendersFlag = 0;
           }
@@ -212,12 +267,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageReceived(String messageText) {
                 smsText.setText(messageText);
-                Log.e("getdata setnum","" + messageText);
+                //Log.e("getdata setnum","" + messageText);
                 hideKeyboard(MainActivity.this);
                 if((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())==false)
                 {
                 String sms = smsText.getText().toString();
                 String phoneNum = phoneNumber.getText().toString();
+                String simSub=sim.getText().toString();
+                if(simSub.equals("SIM 1"))
+                    simNum=0;
+                else if(simSub.equals("SIM 2"))
+                    simNum=1;
                 if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
                     if(checkPermission()) {
 
@@ -225,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             try {
                                 SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(phoneNum, null, sms, null, null);
+                                smsManager.getSmsManagerForSubscriptionId(simNum).sendTextMessage(phoneNum, null, sms, null, null);
                                 Toast.makeText(MainActivity.this, "SMS Sent", Toast.LENGTH_SHORT).show();
                             }
                             catch (Exception e)
@@ -314,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
                 Bundle extras = new Bundle();
                 extras.putString("phonenumber",phoneNumber.getText().toString());
                 extras.putString("sendlist",sendList.getText().toString());
+                extras.putString("SIMSTATUS",sim.getText().toString());
                 myIntent.putExtras(extras);
                 ldSendersFlag=1;
                 startActivity(myIntent);
@@ -334,6 +395,11 @@ public class MainActivity extends AppCompatActivity {
                 {
                 String sms = smsText.getText().toString();
                 String phoneNum = phoneNumber.getText().toString();
+                    String simSub=sim.getText().toString();
+                    if(simSub.equals("SIM 1"))
+                        simNum=0;
+                    else if(simSub.equals("SIM 2"))
+                        simNum=1;
                 if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
                     if(checkPermission()) {
 
@@ -341,7 +407,9 @@ public class MainActivity extends AppCompatActivity {
                         {
                         try {
                             SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage(phoneNum, null, sms, null, null);
+                            //int dip=smsManager.getSubscriptionId();
+                            //Log.e("sub id",Integer.toString(dip));
+                            smsManager.getSmsManagerForSubscriptionId(simNum).sendTextMessage(phoneNum, null, sms, null, null);
                             Toast.makeText(MainActivity.this, "SMS Sent", Toast.LENGTH_SHORT).show();
                         }
                         catch (Exception e)

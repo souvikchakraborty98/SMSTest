@@ -25,6 +25,7 @@ public class recentSMS extends AppCompatActivity {
     String temp1;
     String phno;
     String sndlist;
+    String simStat;
     private RelativeLayout mRelativeLayout;
     ArrayAdapter<String> arrayAdapter;
 
@@ -46,6 +47,7 @@ public class recentSMS extends AppCompatActivity {
         extras.putString("phonenumber", phno);
         extras.putString("sendlist", sndlist);
         extras.putString("savedExtra", "");
+        extras.putString("SIMSTATUS",simStat);
         myIntent.putExtras(extras);
         startActivity(myIntent);
         finish();
@@ -76,6 +78,8 @@ public class recentSMS extends AppCompatActivity {
             try {
                 phno = extras.getString("phonenumber");
                 sndlist = extras.getString("sendlist");
+                simStat = extras.getString("SIMSTATUS");
+
             } catch (Exception e) {
                 Log.e("Error ", "bundle data not found");
             }
@@ -91,7 +95,7 @@ public class recentSMS extends AppCompatActivity {
                     for (int idx = 0; idx < cursor.getColumnCount(); idx++) {
                         try {
                             msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
-                            //Log.e("original", senderID);
+                            //                              Log.e("original", senderID);
                             senderID = (msgData.substring((msgData.indexOf("address:") + 8), msgData.indexOf("person:"))).trim();
                             if ((Character.isDigit(senderID.charAt(1)) == false) && (Character.isUpperCase(senderID.charAt(1)) == true)&& (senderID.charAt(2)!='-')) {
                                 senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
@@ -179,6 +183,7 @@ public class recentSMS extends AppCompatActivity {
                     extras.putString("phonenumber", phno);
                     extras.putString("sendlist", sndlist);
                     extras.putString("savedExtra", temp1);
+                    extras.putString("SIMSTATUS",simStat);
                     myIntent.putExtras(extras);
                     startActivity(myIntent);
                     finish();

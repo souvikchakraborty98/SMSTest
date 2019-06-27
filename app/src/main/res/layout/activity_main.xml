@@ -58,6 +58,35 @@
             android:text="Send SMS"
             android:textSize="20sp" />
 
+        <Switch
+            android:id="@+id/sim_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSendSMS"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:checked="true"
+            android:switchMinWidth="56dp"
+            android:text="SIM SWITCH"
+            android:textOff="SIM 2"
+            android:textOn="SIM 1"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/SIM"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnSendSMS"
+            android:layout_toRightOf="@id/sim_switch"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@android:color/background_light"
+            android:text="SIM 1"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/ldContacts"
             android:layout_width="wrap_content"
@@ -73,7 +102,7 @@
             android:id="@+id/toSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSendSMS"
+            android:layout_below="@+id/sim_switch"
             android:layout_marginTop="10dp"
             android:background="@android:color/background_light"
             android:text="Sending To:-"
