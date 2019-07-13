@@ -267,11 +267,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageReceived(String messageText) {
                 smsText.setText(messageText);
+                String sms="";
+                int flagOTP=0;
                 //Log.e("getdata setnum","" + messageText);
                 hideKeyboard(MainActivity.this);
-                if((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())==false)
+                String OTP_REGEX="[0-9]{1,6}";
+                Pattern pattern = Pattern.compile(OTP_REGEX);
+                Matcher matcher = pattern.matcher(messageText);
+                String otp="";
+                while (matcher.find())
                 {
-                String sms = smsText.getText().toString();
+                    otp = matcher.group();
+                    sms="Your OTP is : "+otp;
+                    flagOTP=1;
+
+                }
+
+              //  Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
+
+                if(!(phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString()))
+                {
+                    if(flagOTP!=1) {
+                        sms = smsText.getText().toString();
+                        flagOTP = 0;
+                    }
+
                 String phoneNum = phoneNumber.getText().toString();
                 String simSub=sim.getText().toString();
                 if(simSub.equals("SIM 1"))
@@ -279,43 +299,25 @@ public class MainActivity extends AppCompatActivity {
                 else if(simSub.equals("SIM 2"))
                     simNum=1;
                 if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
-                    if(checkPermission()) {
+                    if (checkPermission()) {
 
-                        if((phoneNum.length()>=10)&&(phoneNum.length()<=17))
-                        {
+                        if ((phoneNum.length() >= 10) && (phoneNum.length() <= 17)) {
                             try {
                                 SmsManager smsManager = SmsManager.getDefault();
                                 smsManager.getSmsManagerForSubscriptionId(simNum).sendTextMessage(phoneNum, null, sms, null, null);
                                 Toast.makeText(MainActivity.this, "SMS Sent", Toast.LENGTH_SHORT).show();
-                            }
-                            catch (Exception e)
-                            {
+                            } catch (Exception e) {
                                 Toast.makeText(MainActivity.this, "SMS NOT SENT. TRY AGAIN.", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        else
-                        {
+                        } else {
                             Toast.makeText(MainActivity.this, "DOMESTIC CALLS ONLY", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else {
+                    } else {
                         Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
                     }
                 }
-                //TODO OTP EXTRACTION
                // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
-
-              /*  // If your OTP is six digits number, you may use the below code
-
-                Pattern pattern = Pattern.compile(OTP_REGEX);
-                Matcher matcher = pattern.matcher(messageText);
-                String otp;
-                while (matcher.find())
-                {
-                    otp = matcher.group();
-                }
-
-                Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();*/
 
             }
             else
