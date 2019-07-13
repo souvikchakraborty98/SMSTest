@@ -22,10 +22,7 @@ import java.util.ArrayList;
 public class recentSMS extends AppCompatActivity {
     ArrayList<String> senderList = new ArrayList<String>();
     ListView listView;
-    String temp1;
-    String phno;
-    String sndlist;
-    String simStat;
+    String simStat,oTpFlag,sndlist,phno,temp1;
     private RelativeLayout mRelativeLayout;
     ArrayAdapter<String> arrayAdapter;
 
@@ -48,6 +45,7 @@ public class recentSMS extends AppCompatActivity {
         extras.putString("sendlist", sndlist);
         extras.putString("savedExtra", "");
         extras.putString("SIMSTATUS",simStat);
+        extras.putString("otpCheck",oTpFlag);
         myIntent.putExtras(extras);
         startActivity(myIntent);
         finish();
@@ -79,6 +77,7 @@ public class recentSMS extends AppCompatActivity {
                 phno = extras.getString("phonenumber");
                 sndlist = extras.getString("sendlist");
                 simStat = extras.getString("SIMSTATUS");
+                oTpFlag = extras.getString("otpCheck");
 
             } catch (Exception e) {
                 Log.e("Error ", "bundle data not found");
@@ -184,6 +183,7 @@ public class recentSMS extends AppCompatActivity {
                     extras.putString("sendlist", sndlist);
                     extras.putString("savedExtra", temp1);
                     extras.putString("SIMSTATUS",simStat);
+                    extras.putString("otpCheck",oTpFlag);
                     myIntent.putExtras(extras);
                     startActivity(myIntent);
                     finish();

@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
     public static int ldSendersFlag=0;
-    Switch sb;
+    Switch sb,sc;
     TextView sim;
-    int simNum;
+    int simNum,otp_flag;
     SharedPreferences prefs;
 
     public String makenum(String s)
@@ -188,8 +188,10 @@ public class MainActivity extends AppCompatActivity {
         sb = (Switch) findViewById(R.id.sim_switch);
         sb.setTextOff("SIM 2");
         sb.setTextOn("SIM 1");
+        sc=(Switch) findViewById(R.id.otp_switch);
         prefs = getSharedPreferences("com.hfad.smstest", 0);
         String simVariable = prefs.getString("simSubID", "SIM 1");
+        String checkOTP= prefs.getString("checkForOtp","0");
         Log.e("sim id", simVariable);
 
         prefs = getSharedPreferences("com.hfad.smstest", Context.MODE_PRIVATE);
@@ -207,6 +209,18 @@ public class MainActivity extends AppCompatActivity {
                 sb.setChecked(false);
                 sim.setText(simVariable);
             }
+
+            if(checkOTP.equals("1"))
+            {
+                sc.setChecked(true);
+                otp_flag=1;
+            }
+            else if(checkOTP.equals("0"))
+            {
+                sc.setChecked(false);
+                otp_flag=0;
+            }
+
         }
 
         sb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -218,6 +232,19 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     sim.setText("SIM 2");
                     editor.putString("simSubID", "SIM 2");
+                    editor.commit();
+                }
+            }
+        });
+        sc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    otp_flag=1;
+                    editor.putString("checkForOtp", "1");
+                    editor.commit();
+                } else {
+                    otp_flag=0;
+                    editor.putString("checkForOtp", "0");
                     editor.commit();
                 }
             }
@@ -239,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
               String phno = extras.getString("phonenumber");
               String sndlist = extras.getString("sendlist");
               String simState = extras.getString("SIMSTATUS");
+              String OTPFLAG = extras.getString("otpCheck");
               phoneNumber.setText(phno);
               sendList.setText(sndlist);
               //  Log.e("savedExtra",savedExtra );
@@ -254,6 +282,16 @@ public class MainActivity extends AppCompatActivity {
                   sim.setText("SIM 2");
               }
 
+              if(OTPFLAG.equals("true"))
+              {
+                  sc.setChecked(true);
+                  otp_flag=1;
+              }
+              else if(OTPFLAG.equals("false"))
+              {
+                  sc.setChecked(false);
+                  otp_flag=0;
+              }
               phoneNumber2.requestFocus();
               ldSendersFlag = 0;
           }
@@ -268,19 +306,21 @@ public class MainActivity extends AppCompatActivity {
             public void messageReceived(String messageText) {
                 smsText.setText(messageText);
                 String sms="";
-                int flagOTP=0;
-                //Log.e("getdata setnum","" + messageText);
+                int flagOTP = 0;
+                 //Log.e("getdata setnum","" + messageText);
                 hideKeyboard(MainActivity.this);
-                String OTP_REGEX="[0-9]{1,6}";
-                Pattern pattern = Pattern.compile(OTP_REGEX);
-                Matcher matcher = pattern.matcher(messageText);
-                String otp="";
-                while (matcher.find())
+                if(otp_flag==1)
                 {
-                    otp = matcher.group();
-                    sms="Your OTP is : "+otp;
-                    flagOTP=1;
+                    String OTP_REGEX = "[0-9]{1,6}";
+                    Pattern pattern = Pattern.compile(OTP_REGEX);
+                    Matcher matcher = pattern.matcher(messageText);
+                    String otp = "";
+                    while (matcher.find()) {
+                        otp = matcher.group();
+                        sms = "Your OTP is : " + otp;
+                        flagOTP = 1;
 
+                    }
                 }
 
               //  Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
@@ -377,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                 extras.putString("phonenumber",phoneNumber.getText().toString());
                 extras.putString("sendlist",sendList.getText().toString());
                 extras.putString("SIMSTATUS",sim.getText().toString());
+                extras.putString("otpCheck",Boolean.toString(sc.isChecked()));
                 myIntent.putExtras(extras);
                 ldSendersFlag=1;
                 startActivity(myIntent);
