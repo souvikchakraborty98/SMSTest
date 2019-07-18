@@ -2,7 +2,7 @@
     android:id="@+id/loadingCircle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_launcher_background"
+    android:background="@color/stat_colour"
     android:gravity="center">
 
     <TextView
@@ -11,12 +11,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_border"
         android:text="SMS TEST"
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
+
     <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
         android:id="@+id/progressbar"
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -31,7 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/progressbar"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_border"
         android:text="Please Wait.."
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
 </RelativeLayout>

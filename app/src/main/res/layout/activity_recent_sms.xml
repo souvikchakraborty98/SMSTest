@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginEnd="0dp"
-    android:background="@drawable/ic_launcher_background"
+    android:background="@color/stat_colour"
     tools:context="MainActivity">
 
     <TextView
@@ -14,7 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/rounded_border"
         android:text="SMS TEST"
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -25,5 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView12"
         android:layout_centerHorizontal="true"
-        android:background="#5C968D" />
+        android:layout_marginTop="5dp"
+        android:background="@color/stat_colour" />
 </RelativeLayout>

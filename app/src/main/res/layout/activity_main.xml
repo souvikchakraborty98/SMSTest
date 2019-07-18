@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginRight="0dp"
-        android:background="@drawable/ic_launcher_background"
+        android:background="@color/stat_colour"
         tools:context="MainActivity">
 
         <TextView
@@ -19,7 +19,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_border"
             android:text="SMS TEST"
+            android:textColor="@android:color/black"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -30,10 +32,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textView1"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send To"
             android:phoneNumber="true"
             android:textColorHint="@color/abc_primary_text_material_dark"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/editText2"
@@ -44,9 +48,11 @@
             android:layout_alignLeft="@+id/editText"
             android:layout_alignEnd="@+id/textView1"
             android:layout_alignRight="@+id/textView1"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_border_transparent"
             android:hint="Message"
             android:textColorHint="@color/abc_primary_text_material_dark"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btnSendSMS"
@@ -55,51 +61,59 @@
             android:layout_below="@id/ldContacts"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_border"
             android:text="Send SMS"
-            android:textSize="20sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <Switch
             android:id="@+id/sim_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/btnSendSMS"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:checked="true"
+            android:theme="@style/SwitchTheme"
             android:switchMinWidth="56dp"
             android:text="SIM SWITCH"
+            android:textColor="@android:color/white"
             android:textOff="SIM 2"
             android:textOn="SIM 1"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"
+            android:textSize="15sp"
             android:textStyle="bold" />
+
         <Switch
             android:id="@+id/otp_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/sim_switch"
+            android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
+            android:theme="@style/SwitchTheme"
             android:checked="true"
             android:switchMinWidth="56dp"
             android:text="CHECK FOR OTP"
+            android:textColor="@android:color/white"
             android:textOff="NO"
             android:textOn="YES"
-            android:textSize="20sp"
-            android:layout_centerHorizontal="true"
+            android:textSize="15sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/SIM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnSendSMS"
-            android:layout_toRightOf="@id/sim_switch"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            android:background="@android:color/background_light"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@id/sim_switch"
+            android:background="@drawable/rounded_border"
             android:text="SIM 1"
             android:textColor="@android:color/black"
-            android:textSize="25sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <Button
@@ -110,8 +124,10 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_border"
             android:text="Load Contacts"
-            android:textSize="20sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/toSend"
@@ -119,10 +135,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/otp_switch"
             android:layout_marginTop="10dp"
-            android:background="@android:color/background_light"
+            android:background="@drawable/rounded_border"
             android:text="Sending To:-"
             android:textColor="@android:color/black"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <EditText
@@ -131,7 +147,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toSend"
             android:layout_marginTop="10dp"
-            android:background="@android:color/background_light"
+            android:background="@drawable/rounded_border"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -141,10 +157,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sentList"
             android:layout_marginTop="50dp"
-            android:background="@android:color/background_light"
+            android:background="@drawable/rounded_border"
             android:text="Sending From:-"
             android:textColor="@android:color/black"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <EditText
@@ -153,7 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sentFrom"
             android:layout_marginTop="10dp"
-            android:background="@android:color/background_light"
+            android:background="@drawable/rounded_border"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -164,10 +180,11 @@
             android:layout_below="@+id/sendFrom"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
+            android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send From"
             android:phoneNumber="true"
             android:textColorHint="@color/abc_primary_text_material_dark"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/ldContacts2"
@@ -176,8 +193,10 @@
             android:layout_below="@+id/numToSendFrom"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_border"
             android:text="Load Contacts"
-            android:textSize="20sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/getSender"
@@ -187,7 +206,9 @@
             android:layout_marginLeft="0dp"
             android:layout_marginTop="15dp"
             android:layout_toRightOf="@id/ldContacts2"
+            android:background="@drawable/rounded_border"
             android:text="RECENT SENDERS"
-            android:textSize="20sp" />
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
     </RelativeLayout>
 </ScrollView>

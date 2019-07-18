@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:text="Sender: "
         android:textColor="#111010"
-        android:textSize="40dp"
+        android:textSize="20dp"
+        android:background="@drawable/rounded_border"
         android:textStyle="bold" />
 
 </RelativeLayout>
