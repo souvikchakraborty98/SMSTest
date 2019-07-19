@@ -164,10 +164,9 @@ public class MainActivity extends AppCompatActivity {
                // Log.e("setnum",setNum);
                 sendfrom=false;
             }
-          /*  Log.e("sendsto contktpickd",Boolean.toString(sendto) );
-            Log.e("sendsfrom contktpickd",Boolean.toString(sendfrom) );*/
-
-           /* Log.e("permission", "ContactPicked NAME: " + name);
+          /*Log.e("sendsto contktpickd",Boolean.toString(sendto) );
+            Log.e("sendsfrom contktpickd",Boolean.toString(sendfrom) );
+            Log.e("permission", "ContactPicked NAME: " + name);
             Log.e("permission", "ContactPicked NUMBER: " + phone);*/
         } catch (Exception e) {
             e.printStackTrace();

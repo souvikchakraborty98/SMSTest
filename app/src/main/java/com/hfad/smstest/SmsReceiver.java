@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import java.util.LinkedList;
 
 public class SmsReceiver extends BroadcastReceiver {
         String setnumm;
         public void getnumber()
         {
             MainActivity getData=new MainActivity();
+            /*LinkedList<String> setnumm=new LinkedList<>();
+            setnumm=getData.setNum;*/
             setnumm=getData.setNum;
            // Log.e("getdatasetnum our for","" + setnumm);
         }
@@ -24,15 +27,19 @@ public class SmsReceiver extends BroadcastReceiver {
 
         Object[] pdus = (Object[]) data.get("pdus");
 
-        for(int i=0;i<pdus.length;i++){
+        for(int i=0;i<pdus.length;i++)
+        {
             SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdus[i]);
 
             String sender = smsMessage.getDisplayOriginatingAddress();
-            Log.e("Sender", sender);
+            //Log.e("Sender", sender);
             //Check the sender to filter messages which we require to read
-
-            Log.e("getdata setnum","" + setnumm);
-            //if ((sender.equals("+917550167668"))||(sender.equals("+919830093055"))||(sender.equals("+918335962289"))||(sender.equals("+919830519860")))
+            //TODO multiple rules in list run through iterator
+          /*  for(String ssn : setnumm)
+            {
+                //check for match; if match receive message...should work
+            }*/
+            Log.e("getDataSetNum","" + setnumm);
             if ((sender.equals(setnumm)))
             {
 

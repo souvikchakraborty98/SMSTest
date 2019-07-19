@@ -33,6 +33,7 @@
             android:layout_below="@+id/textView1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send To"
             android:phoneNumber="true"
@@ -46,6 +47,7 @@
             android:layout_below="@+id/editText"
             android:layout_alignStart="@+id/editText"
             android:layout_alignLeft="@+id/editText"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:layout_alignEnd="@+id/textView1"
             android:layout_alignRight="@+id/textView1"
             android:layout_marginTop="10dp"
@@ -75,14 +77,14 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:checked="true"
-            android:theme="@style/SwitchTheme"
             android:switchMinWidth="56dp"
             android:text="SIM SWITCH"
             android:textColor="@android:color/white"
             android:textOff="SIM 2"
             android:textOn="SIM 1"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:theme="@style/SwitchTheme" />
 
         <Switch
             android:id="@+id/otp_switch"
@@ -147,8 +149,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/toSend"
             android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_border"
-            android:textColor="@android:color/black"
+            android:background="@drawable/rounded_border_transparent"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textColor="@android:color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -169,8 +172,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sentFrom"
             android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_border"
-            android:textColor="@android:color/black"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:background="@drawable/rounded_border_transparent"
+            android:textColor="@android:color/white"
             android:textSize="20sp" />
 
         <EditText
@@ -180,6 +184,7 @@
             android:layout_below="@+id/sendFrom"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send From"
             android:phoneNumber="true"
