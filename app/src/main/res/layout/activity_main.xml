@@ -20,11 +20,25 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/rounded_border"
-            android:text="SMS TEST"
+            android:text="AUTO SMS FORWARDER"
             android:textColor="@android:color/black"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
+        <View
+            android:id="@+id/View1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#747272"
+            android:layout_below="@+id/sentList"
+            android:layout_marginTop="15dp"/>
+        <View
+            android:id="@+id/View2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#747272"
+            android:layout_below="@+id/View1"
+            android:layout_marginTop="5dp"/>
 
         <EditText
             android:id="@+id/editText"
@@ -143,7 +157,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
+        <TextView
             android:id="@+id/sentList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -158,15 +172,15 @@
             android:id="@+id/sentFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sentList"
-            android:layout_marginTop="50dp"
+            android:layout_below="@+id/View2"
+            android:layout_marginTop="15dp"
             android:background="@drawable/rounded_border"
             android:text="Sending From:-"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
+        <TextView
             android:id="@+id/sendFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,7 +191,7 @@
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
-        <EditText
+        <TextView
             android:id="@+id/numToSendFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -186,7 +200,7 @@
             android:layout_marginTop="50dp"
             android:textCursorDrawable="@drawable/color_cursor"
             android:background="@drawable/rounded_border_transparent"
-            android:hint="Enter Phone Number To Send From"
+            android:hint="Enter Phone Number To Send From "
             android:phoneNumber="true"
             android:textColorHint="@color/abc_primary_text_material_dark"
             android:textSize="20sp" />

@@ -29,6 +29,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
+
+import org.w3c.dom.Text;
+
 import java.security.spec.ECField;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
     Button sendSMS;
     public String phone, name ;
     public static String setNum;
-    EditText phoneNumber;
-    public static EditText phoneNumber2;
-    EditText sendList;
-    public static EditText sendList2;
+    public static EditText phoneNumber;
+    public static TextView phoneNumber2;
+    public static TextView toSend;
+    public static TextView sentFrom;
+    public static TextView sendList;
+    public static TextView sendList2;
     EditText smsText;
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
@@ -190,9 +195,49 @@ public class MainActivity extends AppCompatActivity {
         sendfrom=false;
         sendto=false;
         phoneNumber = (EditText) findViewById(R.id.editText);
-        phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
-        sendList=(EditText)findViewById(R.id.sentList);
-        sendList2=(EditText)findViewById(R.id.sendFrom);
+        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
+        sendList=(TextView)findViewById(R.id.sentList);
+        sendList.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+
+            }
+
+        });
+
+
+        sendList2=(TextView)findViewById(R.id.sendFrom);
+        sendList2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
+
+            }
+
+        });
+        toSend=(TextView)findViewById(R.id.toSend);
+        toSend.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+
+            }
+
+        });
+        sentFrom=(TextView)findViewById(R.id.sentFrom);
+        sentFrom.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
+
+            }
+
+        });
         sim=(TextView)findViewById(R.id.SIM);
         sb = (Switch) findViewById(R.id.sim_switch);
         sb.setTextOff("SIM 2");
@@ -277,11 +322,6 @@ public class MainActivity extends AppCompatActivity {
               String simState = extras.getString("SIMSTATUS");
               String OTPFLAG = extras.getString("otpCheck");
               phoneNumber.setText(phno);
-              sendList.setText(sndlist);
-              //  Log.e("savedExtra",savedExtra );
-              phoneNumber2.setText(savedExtra);
-              setNum = savedExtra;
-              sendList2.setText("Name : " + savedExtra + "\n" + "Phone No. : null");
               if(simState.equals("SIM 1")) {
                   sb.setChecked(true);
                   sim.setText("SIM 1");
@@ -301,7 +341,19 @@ public class MainActivity extends AppCompatActivity {
                   sc.setChecked(false);
                   otp_flag=0;
               }
-              phoneNumber2.requestFocus();
+              sendList.setText(sndlist);
+              //  Log.e("savedExtra",savedExtra );
+              if(savedExtra.equals("null")) {
+                  sendList2.setText("");
+                  phoneNumber2.setText("");
+                  setNum = "";
+              }
+              else {
+                  sendList2.setText("Name : " + savedExtra + "\n" + "Phone No. : null");
+                  phoneNumber2.setText(savedExtra);
+                  setNum = savedExtra;
+              }
+             // phoneNumber2.requestFocus();
               ldSendersFlag = 0;
           }
           catch (Exception e)
@@ -326,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                     String otp = "";
                     while (matcher.find()) {
                         otp = matcher.group();
-                        sms = "Your OTP is : " + otp;
+                        sms = "Your OTP is : " + otp;   //TODO : Fix this- Working only if otp is the last 6 digit pattern
                         flagOTP = 1;
 
                     }
@@ -379,10 +431,10 @@ public class MainActivity extends AppCompatActivity {
 
 
        phoneNumber = (EditText) findViewById(R.id.editText);
-        phoneNumber2 = (EditText) findViewById(R.id.numToSendFrom);
+        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
 
-        sendList=(EditText)findViewById(R.id.sentList);
-        sendList2=(EditText)findViewById(R.id.sendFrom);
+        sendList=(TextView) findViewById(R.id.sentList);
+        sendList2=(TextView)findViewById(R.id.sendFrom);
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkPermission()) {
@@ -416,6 +468,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        phoneNumber2=(TextView)findViewById(R.id.numToSendFrom);
+        phoneNumber2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
         ldSenders = (Button)findViewById(R.id.getSender);
         ldSenders.setOnClickListener(new View.OnClickListener() {
             @Override

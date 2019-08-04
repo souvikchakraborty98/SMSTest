@@ -20,10 +20,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class recentSMS extends AppCompatActivity {
-    ArrayList<String> senderList = new ArrayList<String>();
+    LinkedList<String> senderList = new LinkedList<String>();
     ListView listView;
     String simStat,oTpFlag,sndlist,phno,temp1;
     private RelativeLayout mRelativeLayout;
@@ -52,7 +53,7 @@ public class recentSMS extends AppCompatActivity {
         Bundle extras = new Bundle();
         extras.putString("phonenumber", phno);
         extras.putString("sendlist", sndlist);
-        extras.putString("savedExtra", "");
+        extras.putString("savedExtra", "null");
         extras.putString("SIMSTATUS",simStat);
         extras.putString("otpCheck",oTpFlag);
         myIntent.putExtras(extras);
@@ -61,9 +62,9 @@ public class recentSMS extends AppCompatActivity {
 
     }
 
-    public static <T> ArrayList<T> removeDuplicates(ArrayList<T> list) {
+    public static <T> LinkedList<T> removeDuplicates(LinkedList<T> list) {
 
-        ArrayList<T> newList = new ArrayList<T>();
+        LinkedList<T> newList = new LinkedList<T>();
 
         for (T element : list) {
 
