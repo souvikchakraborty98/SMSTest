@@ -3,9 +3,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,10 +39,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
-
-import org.w3c.dom.Text;
-
-import java.security.spec.ECField;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     Switch sb,sc;
     TextView sim;
     int simNum,otp_flag;
+    AlertDialog.Builder builder;
     SharedPreferences prefs;
 
     public String makenum(String s)
@@ -134,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
     public void clickPickContacts(View v)
     {
         Intent cp = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
@@ -179,19 +187,23 @@ public class MainActivity extends AppCompatActivity {
             sendfrom=false;
         }
     }
+    ActionBar actBar;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+       // getSupportActionBar().hide();
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        actBar=getSupportActionBar();
+        actBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1D1C1C")));
         Window window = MainActivity.this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.stat_colour));
-
-        setContentView(R.layout.activity_main);
+         setContentView(R.layout.activity_main);
+        builder = new AlertDialog.Builder(this);
         sendfrom=false;
         sendto=false;
         phoneNumber = (EditText) findViewById(R.id.editText);
@@ -201,7 +213,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" above", Toast.LENGTH_SHORT);
 
             }
 
@@ -213,7 +226,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
+                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
 
             }
 
@@ -223,7 +237,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
+                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" above", Toast.LENGTH_SHORT);
 
             }
 
@@ -233,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
-
+                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
+                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
             }
 
         });
@@ -473,8 +488,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT).show();
+                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
             }
 
         });
@@ -547,10 +562,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.abouts, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item1:
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+                return true;
+            case R.id.item2:
+                final SpannableString s = new SpannableString(MainActivity.this.getText(R.string.dialog_message));
+                Linkify.addLinks(s, Linkify.ALL);
 
+                final AlertDialog d = new AlertDialog.Builder(MainActivity.this)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .setMessage( s )
+                        .setTitle("About")
+                        .create();
 
-
+                d.show();
+                ((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -559,7 +602,8 @@ public class MainActivity extends AppCompatActivity {
         int ContactPermissionResult = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS);
         int readsms = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_SMS);
         int recsms = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECEIVE_SMS);
-        if ((result == PackageManager.PERMISSION_GRANTED)&&(ContactPermissionResult==PackageManager.PERMISSION_GRANTED)&&(readsms == PackageManager.PERMISSION_GRANTED)&&(recsms == PackageManager.PERMISSION_GRANTED)) {
+        int vibrater=ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.VIBRATE);
+        if ((result == PackageManager.PERMISSION_GRANTED)&&(ContactPermissionResult==PackageManager.PERMISSION_GRANTED)&&(readsms == PackageManager.PERMISSION_GRANTED)&&(recsms == PackageManager.PERMISSION_GRANTED)&& (vibrater==PackageManager.PERMISSION_GRANTED)) {
             return true;
         } else {
             return false;

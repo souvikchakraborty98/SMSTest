@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import java.util.LinkedList;
 
 public class SmsReceiver extends BroadcastReceiver {
         String setnumm;
@@ -37,7 +36,7 @@ public class SmsReceiver extends BroadcastReceiver {
             //TODO multiple rules in list run through iterator
           /*  for(String ssn : setnumm)
             {
-                //check for match; if match receive message...should work
+                //check for match; if match receive message...should work i guess?
             }*/
             Log.e("getDataSetNum","" + setnumm);
             if ((sender.equals(setnumm)))

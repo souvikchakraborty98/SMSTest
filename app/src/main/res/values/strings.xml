@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ASF</string>
+    <string name="dialog_message">Auto Message Forwarder.\n© Souvik Chakraborty,2019\ngithub.com/souvikchakraborty98</string>
 </resources>

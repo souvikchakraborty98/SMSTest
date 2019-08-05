@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:id="@+id/scrollLayout"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/relLayout"
@@ -215,7 +214,8 @@
             android:background="@drawable/rounded_border"
             android:text="Load Contacts"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:layout_marginBottom="15dp"/>
 
         <Button
             android:id="@+id/getSender"
@@ -228,6 +228,7 @@
             android:background="@drawable/rounded_border"
             android:text="RECENT SENDERS"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:layout_marginBottom="15dp"/>
     </RelativeLayout>
 </ScrollView>
