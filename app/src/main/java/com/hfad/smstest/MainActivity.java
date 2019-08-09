@@ -2,6 +2,7 @@ package com.hfad.smstest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     Switch sb,sc;
     TextView sim;
     int simNum,otp_flag;
-    AlertDialog.Builder builder;
     SharedPreferences prefs;
 
     public String makenum(String s)
@@ -116,9 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void hideKeyboard(Activity activity) {                       //TO HIDE KEYBOARD DURING FOCUS CHANGE
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view == null) {
             view = new View(activity);
         }
@@ -203,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.stat_colour));
          setContentView(R.layout.activity_main);
-        builder = new AlertDialog.Builder(this);
         sendfrom=false;
         sendto=false;
         phoneNumber = (EditText) findViewById(R.id.editText);
@@ -574,22 +571,33 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item1:
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
+                final AlertDialog.Builder diag = new AlertDialog.Builder(MainActivity.this);
+                diag.setTitle("Confirmation");
+                diag.setMessage("Refresh App?");
+                diag.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = getIntent();
+                        finish();
+                        startActivity(intent);
+                    }
+                    });
+                diag.setNegativeButton(android.R.string.no,null);
+                AlertDialog alertDialog = diag.create();
+                alertDialog.show();
                 return true;
             case R.id.item2:
                 final SpannableString s = new SpannableString(MainActivity.this.getText(R.string.dialog_message));
                 Linkify.addLinks(s, Linkify.ALL);
 
                 final AlertDialog d = new AlertDialog.Builder(MainActivity.this)
-                        .setPositiveButton(android.R.string.ok, null)
+                        .setPositiveButton(android.R.string.yes, null)
                         .setMessage( s )
                         .setTitle("About")
                         .create();
 
                 d.show();
-                ((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+                ((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance()); //only for URL handling
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -46,11 +46,12 @@
             android:layout_below="@+id/textView1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:textCursorDrawable="@drawable/color_cursor"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send To"
             android:phoneNumber="true"
+            android:textColor="@android:color/white"
             android:textColorHint="@color/abc_primary_text_material_dark"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="20sp" />
 
         <EditText
@@ -197,11 +198,12 @@
             android:layout_below="@+id/sendFrom"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:textCursorDrawable="@drawable/color_cursor"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send From "
             android:phoneNumber="true"
-            android:textColorHint="@color/abc_primary_text_material_dark"
+            android:textColorHint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="20sp" />
 
         <Button
