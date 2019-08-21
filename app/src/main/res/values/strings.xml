@@ -4,4 +4,6 @@
     <string name="dialog_message">ASF.\nAutomated SMS Forwarding and more!\nHappens in the background quick and automatically
         according to user defined rules in the app. This is still under
         development with many more upcoming features like scheduling, multiple rules,encryption. etc\n© Souvik Chakraborty,2019\ngithub.com/souvikchakraborty98/SMSTest</string>
+    <string name="refApp">Refresh App</string>
+    <string name="about">About</string>
 </resources>

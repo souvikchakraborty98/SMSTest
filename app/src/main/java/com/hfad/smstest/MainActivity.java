@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Vibrator;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
     Button sendSMS;
     public String phone, name ;
     public static String setNum;
-    public static EditText phoneNumber;
-    public static TextView phoneNumber2;
-    public static TextView toSend;
-    public static TextView sentFrom;
-    public static TextView sendList;
-    public static TextView sendList2;
+    EditText phoneNumber;
+    TextView phoneNumber2;
+    TextView toSend;
+    TextView sentFrom;
+    TextView sendList;
+    TextView sendList2;
     EditText smsText;
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
@@ -72,15 +74,15 @@ public class MainActivity extends AppCompatActivity {
     {
         String seq1="+91";
         String seq2="91";
-        String news="";
+        String news;
         String newss="";
-        if(s.contains(seq1)==true)
+        if(s.contains(seq1))
         {
             news=s.substring(3,s.length());
 
             for(int i=0;i<news.length();i++)
             {
-                if(Character.isDigit(news.charAt(i))==true)
+                if(Character.isDigit(news.charAt(i)))
                 {
                     newss=newss+news.charAt(i);
                 }
@@ -92,18 +94,18 @@ public class MainActivity extends AppCompatActivity {
 
             for(int i=0;i<news.length();i++)
             {
-                if(Character.isDigit(news.charAt(i))==true)
+                if(Character.isDigit(news.charAt(i)))
                 {
                     newss=newss+news.charAt(i);
                 }
             }
         }
-        else if(s.contains(seq1)==false)
+        else if(!s.contains(seq1))
         {
             news=s;
             for(int i=0;i<news.length();i++)
             {
-                if(Character.isDigit(news.charAt(i))==true)
+                if(Character.isDigit(news.charAt(i)))
                 {
                     newss=newss+news.charAt(i);
                 }
@@ -190,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
+        stopService(startBgSMS);
 
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
        // getSupportActionBar().hide();
@@ -204,6 +208,19 @@ public class MainActivity extends AppCompatActivity {
         sendfrom=false;
         sendto=false;
         phoneNumber = (EditText) findViewById(R.id.editText);
+        phoneNumber.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent ev)
+            {
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Or..you could just try \"Load Contacts\" below ? :P" ,Toast.LENGTH_LONG);
+                abvKeyBrd.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 200);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
+               // new VibratingToast(MainActivity.this, "You could just try \"Load Contacts\" below :P", Toast.LENGTH_SHORT);
+                return false;
+            }
+        });
         phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
         sendList=(TextView)findViewById(R.id.sentList);
         sendList.setOnClickListener(new View.OnClickListener(){
@@ -286,6 +303,12 @@ public class MainActivity extends AppCompatActivity {
                 sc.setChecked(false);
                 otp_flag=0;
             }
+            final AlertDialog.Builder diag = new AlertDialog.Builder(MainActivity.this);
+            diag.setTitle("WARNING !!!");
+            diag.setMessage("PLEASE DO NOT REMOVE APP FROM \"RECENT APPS\" !!!\nDUE TO SYSTEM LIMITATIONS, THIS APP CANNOT WORK WHEN REMOVED FROM RECENT APPLICATIONS.");
+            diag.setPositiveButton(android.R.string.ok, null);
+            AlertDialog alertDialog = diag.create();
+            alertDialog.show();
 
         }
 
@@ -390,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
                     String otp = "";
                     while (matcher.find()) {
                         otp = matcher.group();
-                        sms = "Your OTP is : " + otp;   //TODO : Fix this- Working only if otp is the last 6 digit pattern
+                        sms = "Your OTP is : " + otp;
                         flagOTP = 1;
 
                     }
@@ -560,6 +583,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -615,8 +639,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else {
             return false;
-        }
     }
+}
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS,Manifest.permission.READ_CONTACTS,Manifest.permission.READ_SMS,Manifest.permission.RECEIVE_SMS}, PERMISSION_REQUEST_CODE);
@@ -649,8 +673,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        if (back_pressed + 2000 > System.currentTimeMillis()) super.onBackPressed();
-        else Toast.makeText(getBaseContext(), "Stop Service? Press Back Again To Confirm.", Toast.LENGTH_SHORT).show();
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
+            startService(startBgSMS);
+            final AlertDialog.Builder diag = new AlertDialog.Builder(MainActivity.this);
+            diag.setTitle("WARNING !!!");
+            diag.setMessage("PLEASE DO NOT REMOVE APP FROM \"RECENT APPS\" !!!\nDUE TO SYSTEM LIMITATIONS, THIS APP CANNOT WORK WHEN REMOVED FROM RECENT APPLICATIONS. PRESS OK TO EXIT.");
+            diag.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                   MainActivity.super.onBackPressed();
+                }
+            });
+            AlertDialog alertDialog = diag.create();
+            alertDialog.show();
+
+
+        }
+        else
+            Toast.makeText(getBaseContext(), "Press Back Again To Confirm.", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
 
