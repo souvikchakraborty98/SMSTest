@@ -674,15 +674,16 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed()
     {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
-            Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
-            startService(startBgSMS);
             final AlertDialog.Builder diag = new AlertDialog.Builder(MainActivity.this);
             diag.setTitle("WARNING !!!");
             diag.setMessage("PLEASE DO NOT REMOVE APP FROM \"RECENT APPS\" !!!\nDUE TO SYSTEM LIMITATIONS, THIS APP CANNOT WORK WHEN REMOVED FROM RECENT APPLICATIONS. PRESS OK TO EXIT.");
             diag.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                   MainActivity.super.onBackPressed();
+                    Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
+                    startService(startBgSMS);
+                    MainActivity.super.onBackPressed();
+
                 }
             });
             AlertDialog alertDialog = diag.create();
