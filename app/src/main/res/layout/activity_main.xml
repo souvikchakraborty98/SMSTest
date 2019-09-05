@@ -126,9 +126,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/sim_switch"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/rounded_border_transparent"
             android:text="SIM 1"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -151,9 +151,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/otp_switch"
             android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/rounded_border_transparent"
             android:text="Sending To:-"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -174,9 +174,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/View2"
             android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/rounded_border_transparent"
             android:text="Sending From:-"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 

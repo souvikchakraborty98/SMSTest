@@ -33,8 +33,6 @@ public class SmsReceiver extends BroadcastReceiver {
 
             String sender = smsMessage.getDisplayOriginatingAddress();
             //Log.e("Sender", sender);
-            //Check the sender to filter messages which we require to read
-            //TODO multiple rules in list run through iterator
             for (String s : setnumm) {
                 Log.e("getDataSetNum", "" + setnumm);
                 if ((sender.equals(s)) || (sender.equals(s.toLowerCase()))) {

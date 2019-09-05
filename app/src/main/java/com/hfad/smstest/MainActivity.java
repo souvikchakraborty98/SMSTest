@@ -45,6 +45,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void contactPicked(Intent data) {
         Cursor cursor;
+        TinyDB tinydb = new TinyDB(getApplicationContext());
         try {
             Uri uri = data.getData();
             cursor = getContentResolver().query(uri, null, null, null, null);
@@ -175,9 +177,15 @@ public class MainActivity extends AppCompatActivity {
                // Log.e("phone",phone );
                 if(!setNum.contains(makenum(phone)))
                 setNum.add(makenum(phone));
+                setNum.removeAll(Collections.singleton(null));
+                setNum.removeAll(Collections.singleton(""));
+                nameList.removeAll(Collections.singleton(null));
+                nameList.removeAll(Collections.singleton(""));
                 phoneNumber2.setText(""+setNum);
                 if(!nameList.contains(name))
                 nameList.add(name);
+                tinydb.putListString("setNum", setNum);
+                tinydb.putListString("nameList",nameList);
                 sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
                // Log.e("setnum",setNum);
                 sendfrom=false;
@@ -200,6 +208,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
         stopService(startBgSMS);
+        final TinyDB tinydb = new TinyDB(getApplicationContext());
+        setNum=tinydb.getListString("setNum");
+        nameList=tinydb.getListString("nameList");
         phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
         sendList2=(TextView)findViewById(R.id.sendFrom);
         try {
@@ -398,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
               }
               sendList.setText(sndlist);
               //  Log.e("savedExtra",savedExtra );
-              if(savedExtra.length==0) {
+              if(setNum.size()==0) {
                   sendList2.setText("");
                   phoneNumber2.setText("");
                   setNum.add("");
@@ -414,6 +425,12 @@ public class MainActivity extends AppCompatActivity {
                       if(!nameList.contains((savedExtra[i])))
                       nameList.add(savedExtra[i]);
                   }
+                  setNum.removeAll(Collections.singleton(null));
+                  setNum.removeAll(Collections.singleton(""));
+                  nameList.removeAll(Collections.singleton(null));
+                  nameList.removeAll(Collections.singleton(""));
+                  tinydb.putListString("setNum", setNum);
+                  tinydb.putListString("nameList",nameList);
                   sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : "+setNum);
                   phoneNumber2.setText(""+setNum);
 
@@ -573,6 +590,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         setNum.clear();
                         nameList.clear();
+                        tinydb.putListString("setNum", setNum);
+                        tinydb.putListString("nameList",nameList);
                         phoneNumber2.setText("");
                         sendList2.setText("");
                     }

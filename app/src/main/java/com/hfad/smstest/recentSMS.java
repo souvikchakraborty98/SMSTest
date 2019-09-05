@@ -28,7 +28,9 @@ import javax.crypto.AEADBadTagException;
 public class recentSMS extends AppCompatActivity {
     //LinkedList<String> senderList = new LinkedList<String>();
     ArrayList<DataModel> senderList=new ArrayList<DataModel>();
+    ArrayList<String> setno=new ArrayList<String>();
     ListView listView;
+    int c;
     String simStat,oTpFlag,sndlist,phno;
     DataModel temp1;
     private RelativeLayout mRelativeLayout;
@@ -49,7 +51,6 @@ public class recentSMS extends AppCompatActivity {
         setContentView(R.layout.loading_circle);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.loadingCircle);
         mRelativeLayout.setVisibility(View.VISIBLE);
-
         new PrepareData().execute();
     }
 
@@ -124,7 +125,10 @@ public class recentSMS extends AppCompatActivity {
                             {
                                 senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                             }
-                            senderList.add(new DataModel(senderID, false));
+                            if(!MainActivity.setNum.contains(senderID))
+                                senderList.add(new DataModel(senderID, false));
+                            else
+                                senderList.add(new DataModel(senderID, true));
                        /* if (senderID.equals("A$AIRACT"))
                         {
                             f=1;
@@ -143,7 +147,10 @@ public class recentSMS extends AppCompatActivity {
                                     {
                                         senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                                     }
-                                    senderList.add(new DataModel(senderID, false));
+                                    if(!MainActivity.setNum.contains(senderID))
+                                        senderList.add(new DataModel(senderID, false));
+                                    else
+                                        senderList.add(new DataModel(senderID, true));
                                    // Log.e("messages sender v2", senderID);
                          /*   if (senderID.equals("A$AIRACT"))
                             {
@@ -178,6 +185,7 @@ public class recentSMS extends AppCompatActivity {
             listView.setAdapter(arrayAdapter);
             /*listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
             listView.setItemsCanFocus(false);*/
+            final TinyDB tinydb = new TinyDB(getApplicationContext());
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -195,15 +203,28 @@ public class recentSMS extends AppCompatActivity {
                     doneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            for(int i=0;i<senderList.size();i++)
+                            for(int i=senderList.size()-1;i>=0;i--)
                             {
                                 DataModel d=senderList.get(i);
                                 if(d.checked) {
                                     selectedContacts.add(d.name);
-                                    Log.e("selectedContacts", d.name );
+                                    if(!MainActivity.setNum.contains(d.name))
+                                    MainActivity.setNum.add(d.name);
+                                    if(!MainActivity.nameList.contains(d.name))
+                                        MainActivity.nameList.add(d.name);
+                                    //Log.e("selectedContacts", d.name );
+                                }
+                                if(!d.checked)
+                                {
+                                    MainActivity.setNum.remove(d.name);
+                                    MainActivity.nameList.remove(d.name);
+
+
                                 }
                             }
                             String[] selectedContactsArray = selectedContacts.toArray(new String[selectedContacts.size()]);
+                            tinydb.putListString("setNum", MainActivity.setNum);
+                            tinydb.putListString("nameList",MainActivity.nameList);
                             extras.putString("phonenumber", phno);
                             extras.putString("sendlist", sndlist);
                             extras.putStringArray("savedExtra", selectedContactsArray);
