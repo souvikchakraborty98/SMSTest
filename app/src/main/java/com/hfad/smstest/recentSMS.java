@@ -2,9 +2,12 @@ package com.hfad.smstest;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,24 +15,33 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import java.util.LinkedList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import javax.crypto.AEADBadTagException;
 
 
 public class recentSMS extends AppCompatActivity {
-    LinkedList<String> senderList = new LinkedList<String>();
+    //LinkedList<String> senderList = new LinkedList<String>();
+    ArrayList<DataModel> senderList=new ArrayList<DataModel>();
     ListView listView;
-    String simStat,oTpFlag,sndlist,phno,temp1;
+    String simStat,oTpFlag,sndlist,phno;
+    DataModel temp1;
     private RelativeLayout mRelativeLayout;
-    ArrayAdapter<String> arrayAdapter;
+    private CustomAdapter arrayAdapter;
+    ActionBar actBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+       // requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //getSupportActionBar().hide();
+        actBar=getSupportActionBar();
+        actBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1D1C1C")));
         Window window = recentSMS.this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -57,18 +69,21 @@ public class recentSMS extends AppCompatActivity {
 
     }
 
-    public static <T> LinkedList<T> removeDuplicates(LinkedList<T> list) {
+    public static ArrayList<DataModel> removeDuplicates(ArrayList<DataModel> list) {
+        ArrayList<DataModel> noRepeat = new ArrayList<DataModel>();
 
-        LinkedList<T> newList = new LinkedList<T>();
-
-        for (T element : list) {
-
-            if (!newList.contains(element)) {
-
-                newList.add(element);
+        for (DataModel event : list) {
+            boolean isFound = false;
+            // check if the event name exists in noRepeat
+            for (DataModel e : noRepeat) {
+                if (e.name.equals(event.name) || (e.equals(event))) {
+                    isFound = true;
+                    break;
+                }
             }
+            if (!isFound) noRepeat.add(event);
         }
-        return newList;
+        return noRepeat;
     }
 
     public class PrepareData extends AsyncTask<Void, Void, Void>
@@ -91,7 +106,7 @@ public class recentSMS extends AppCompatActivity {
 
             Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
 
-            if (cursor.moveToFirst()) { //checking the result to prevent exception yo
+            if (cursor.moveToFirst()) {
                 do {
                     String msgData = "";
                     String senderID = "";
@@ -109,7 +124,7 @@ public class recentSMS extends AppCompatActivity {
                             {
                                 senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                             }
-                            senderList.add(senderID);
+                            senderList.add(new DataModel(senderID, false));
                        /* if (senderID.equals("A$AIRACT"))
                         {
                             f=1;
@@ -128,7 +143,7 @@ public class recentSMS extends AppCompatActivity {
                                     {
                                         senderID = senderID.substring(0, 2) + "-" + senderID.substring(2);
                                     }
-                                    senderList.add(senderID);
+                                    senderList.add(new DataModel(senderID, false));
                                    // Log.e("messages sender v2", senderID);
                          /*   if (senderID.equals("A$AIRACT"))
                             {
@@ -136,7 +151,7 @@ public class recentSMS extends AppCompatActivity {
                             }*/
                                 }
                             } catch (Exception e1) {
-                                Log.e("still no sender", msgData);
+                                Log.e("still no sender", String.valueOf(e1));
                             }
                         }
                     }
@@ -145,23 +160,9 @@ public class recentSMS extends AppCompatActivity {
             } else {
                 Log.e("sms", "EOF");
             }
-       /* if(f==1)
-        {
-            Log.e("found","it is there");
-        }*/
             cursor.close();
 
             senderList = removeDuplicates(senderList);
-
-
-
-           /* runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-
-                }
-            });*/
 
             return null;
         }
@@ -173,25 +174,46 @@ public class recentSMS extends AppCompatActivity {
             setContentView(R.layout.activity_recent_sms);
             //Log.e("at 12", senderList.get(12));
             listView = (ListView) findViewById(R.id.listview);
-            arrayAdapter = new ArrayAdapter<String>(recentSMS.this, R.layout.contact_listview, R.id.textView, senderList);
+            arrayAdapter = new CustomAdapter(senderList, getApplicationContext());
             listView.setAdapter(arrayAdapter);
+            /*listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            listView.setItemsCanFocus(false);*/
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     temp1 = senderList.get(position);
+                    DataModel dataModel= senderList.get(position);
+                    dataModel.checked = !dataModel.checked;
+                    arrayAdapter.notifyDataSetChanged();
                     //  Log.e("sender at pos", temp1);
-                    Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
-                    Bundle extras = new Bundle();
-                    extras.putString("phonenumber", phno);
-                    extras.putString("sendlist", sndlist);
-                    extras.putString("savedExtra", temp1);
-                    extras.putString("SIMSTATUS",simStat);
-                    extras.putString("otpCheck",oTpFlag);
-                    myIntent.putExtras(extras);
-                    startActivity(myIntent);
-                    finish();
+                    final ArrayList<String> selectedContacts=new ArrayList<>();
+                    final Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
+                    final Bundle extras = new Bundle();
+                    Button doneButton = (Button) findViewById(R.id.doneButton);
+                    doneButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for(int i=0;i<senderList.size();i++)
+                            {
+                                DataModel d=senderList.get(i);
+                                if(d.checked) {
+                                    selectedContacts.add(d.name);
+                                    Log.e("selectedContacts", d.name );
+                                }
+                            }
+                            String[] selectedContactsArray = selectedContacts.toArray(new String[selectedContacts.size()]);
+                            extras.putString("phonenumber", phno);
+                            extras.putString("sendlist", sndlist);
+                            extras.putStringArray("savedExtra", selectedContactsArray);
+                            extras.putString("SIMSTATUS", simStat);
+                            extras.putString("otpCheck", oTpFlag);
+                            myIntent.putExtras(extras);
+                            startActivity(myIntent);
+                            finish();
+                        }
+                    });
                 }
             });
             //TODO IMPLEMENT SEARCH IN SENDERLIST

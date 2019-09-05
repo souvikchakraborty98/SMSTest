@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class SmsReceiver extends BroadcastReceiver {
-        String setnumm;
+        ArrayList<String> setnumm;
         public void getnumber()
         {
             MainActivity getData=new MainActivity();
@@ -26,31 +28,26 @@ public class SmsReceiver extends BroadcastReceiver {
 
         Object[] pdus = (Object[]) data.get("pdus");
 
-        for(int i=0;i<pdus.length;i++)
-        {
+        for(int i=0;i<pdus.length;i++) {
             SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) pdus[i]);
 
             String sender = smsMessage.getDisplayOriginatingAddress();
             //Log.e("Sender", sender);
             //Check the sender to filter messages which we require to read
             //TODO multiple rules in list run through iterator
-          /*  for(String ssn : setnumm)
-            {
-                //check for match; if match receive message...should work i guess?
-            }*/
-            Log.e("getDataSetNum","" + setnumm);
-            if ((sender.equals(setnumm)))
-            {
+            for (String s : setnumm) {
+                Log.e("getDataSetNum", "" + setnumm);
+                if ((sender.equals(s)) || (sender.equals(s.toLowerCase()))) {
 
-                String messageBody = smsMessage.getMessageBody();
-                //Log.e("message","" + messageBody);
+                    String messageBody = smsMessage.getMessageBody();
+                    //Log.e("message","" + messageBody);
 
-                //Pass the message text to interface
-                mListener.messageReceived(messageBody);
+                    //Pass the message text to interface
+                    mListener.messageReceived(messageBody);
 
+                }
             }
         }
-
     }
 
     public static void bindListener(SmsListener listener) {

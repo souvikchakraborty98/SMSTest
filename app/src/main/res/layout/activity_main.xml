@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<ScrollView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollLayout"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:id="@+id/relLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,17 +12,18 @@
         android:background="@color/stat_colour"
         tools:context="MainActivity">
 
-        <TextView
+        <!--<TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/rounded_border"
-            android:text="AUTO SMS FORWARDER"
-            android:textColor="@android:color/black"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="ASF"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />-->
 
         <View
             android:id="@+id/View1"
@@ -43,18 +44,17 @@
             android:id="@+id/editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView1"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Enter Phone Number To Send To"
-            android:phoneNumber="true"
             android:textColor="@android:color/white"
             android:textColorHint="@color/abc_primary_text_material_dark"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            /><!--android:layout_below="@+id/textView1"-->
 
-        <EditText
+        <TextView
             android:id="@+id/editText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,8 +62,8 @@
             android:layout_alignStart="@+id/editText"
             android:layout_alignLeft="@+id/editText"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:layout_alignEnd="@+id/textView1"
-            android:layout_alignRight="@+id/textView1"
+            android:layout_alignEnd="@+id/editText"
+            android:layout_alignRight="@+id/editText"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Message"
@@ -180,6 +180,19 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/clearSendFromList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/View2"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@id/sentFrom"
+            android:background="@drawable/rounded_border"
+            android:text="CLEAR LIST"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
         <TextView
             android:id="@+id/sendFrom"
             android:layout_width="wrap_content"
@@ -224,13 +237,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/numToSendFrom"
-            android:layout_marginLeft="0dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
             android:layout_toRightOf="@id/ldContacts2"
             android:background="@drawable/rounded_border"
             android:text="RECENT SENDERS"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
-            android:layout_marginBottom="15dp"/>
+            android:textSize="15sp" />
     </RelativeLayout>
 </ScrollView>

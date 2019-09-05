@@ -42,6 +42,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,19 +52,17 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    Button contactsButton;
-    Button contactsButton2;
-    Button ldSenders;
-    Button sendSMS;
+    Button sendSMS,clearSendFromList,ldSenders,contactsButton2,contactsButton;
     public String phone, name ;
-    public static String setNum;
+    public static ArrayList<String> setNum=new ArrayList<>();
+    public static ArrayList<String> nameList=new ArrayList<>();
     EditText phoneNumber;
     TextView phoneNumber2;
     TextView toSend;
     TextView sentFrom;
     TextView sendList;
     TextView sendList2;
-    EditText smsText;
+    TextView smsText;
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
     public static int ldSendersFlag=0;
@@ -165,15 +166,19 @@ public class MainActivity extends AppCompatActivity {
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             if(sendto==true) {
                 phoneNumber.setText(phone);
-                sendList.setText("Name : " + name + "\n" + "Phone No. : " + phone);
+                Log.e("tempString",phone);
+                sendList.setText("Name[s] : " + name + "\n" + "Phone No[s]. : " + phone);
                 sendto=false;
             }
             if(sendfrom==true)
             {
-                phoneNumber2.setText(phone);
-                sendList2.setText("Name : " + name + "\n" + "Phone No. : " + phone);
                // Log.e("phone",phone );
-                setNum=makenum(phone);
+                if(!setNum.contains(makenum(phone)))
+                setNum.add(makenum(phone));
+                phoneNumber2.setText(""+setNum);
+                if(!nameList.contains(name))
+                nameList.add(name);
+                sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
                // Log.e("setnum",setNum);
                 sendfrom=false;
             }
@@ -192,22 +197,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
         stopService(startBgSMS);
+        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
+        sendList2=(TextView)findViewById(R.id.sendFrom);
+        try {
+            if(setNum.size()!=0)
+            {
+                phoneNumber2.setText("" + setNum);
+                sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
+            }
+        }
+        catch (Exception e) {
+        }
+        sendList=(TextView)findViewById(R.id.sentList);
+        phoneNumber = (EditText) findViewById(R.id.editText);
+        sentFrom=(TextView)findViewById(R.id.sentFrom);
+        clearSendFromList=(Button)findViewById(R.id.clearSendFromList);
 
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
        // getSupportActionBar().hide();
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+       // getSupportActionBar().setDisplayShowTitleEnabled(false);
         actBar=getSupportActionBar();
         actBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1D1C1C")));
         Window window = MainActivity.this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.stat_colour));
-         setContentView(R.layout.activity_main);
+
         sendfrom=false;
         sendto=false;
-        phoneNumber = (EditText) findViewById(R.id.editText);
+
         phoneNumber.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -221,8 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
-        sendList=(TextView)findViewById(R.id.sentList);
+
         sendList.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -235,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        sendList2=(TextView)findViewById(R.id.sendFrom);
+
         sendList2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -257,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        sentFrom=(TextView)findViewById(R.id.sentFrom);
+
         sentFrom.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -351,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
       if(ldSendersFlag==1) {
           try {
               Bundle extras = getIntent().getExtras();
-              String savedExtra = extras.getString("savedExtra");
+              String[] savedExtra = extras.getStringArray("savedExtra");
               String phno = extras.getString("phonenumber");
               String sndlist = extras.getString("sendlist");
               String simState = extras.getString("SIMSTATUS");
@@ -378,15 +398,25 @@ public class MainActivity extends AppCompatActivity {
               }
               sendList.setText(sndlist);
               //  Log.e("savedExtra",savedExtra );
-              if(savedExtra.equals("null")) {
+              if(savedExtra.length==0) {
                   sendList2.setText("");
                   phoneNumber2.setText("");
-                  setNum = "";
+                  setNum.add("");
               }
               else {
-                  sendList2.setText("Name : " + savedExtra + "\n" + "Phone No. : null");
-                  phoneNumber2.setText(savedExtra);
-                  setNum = savedExtra;
+                  for(int i=0;i<savedExtra.length;i++)
+                  {
+                      if(!setNum.contains(savedExtra[i]))
+                      setNum.add(savedExtra[i]);
+                  }
+                  for(int i=0;i<savedExtra.length;i++)
+                  {
+                      if(!nameList.contains((savedExtra[i])))
+                      nameList.add(savedExtra[i]);
+                  }
+                  sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : "+setNum);
+                  phoneNumber2.setText(""+setNum);
+
               }
              // phoneNumber2.requestFocus();
               ldSendersFlag = 0;
@@ -531,16 +561,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        clearSendFromList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(MainActivity.this);
+                final AlertDialog.Builder diagClear = new AlertDialog.Builder(MainActivity.this);
+                diagClear.setTitle("Confirmation");
+                diagClear.setMessage("Clear Send From List ? Press OK to clear.");
+                diagClear.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        setNum.clear();
+                        nameList.clear();
+                        phoneNumber2.setText("");
+                        sendList2.setText("");
+                    }
+                });
+                diagClear.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int id) {
+                        Toast.makeText(MainActivity.this, "List not cleared.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                AlertDialog alertDialog = diagClear.create();
+                alertDialog.show();
+            }
+        });
 
-
-        smsText = (EditText) findViewById(R.id.editText2);
+        smsText = (TextView) findViewById(R.id.editText2);
         sendSMS = (Button) findViewById(R.id.btnSendSMS);
         sendSMS.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 hideKeyboard(MainActivity.this);
-                if((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())==false)
+                if(!((phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString())))
                 {
                 String sms = smsText.getText().toString();
                 String phoneNum = phoneNumber.getText().toString();
@@ -688,13 +743,10 @@ public class MainActivity extends AppCompatActivity {
             });
             AlertDialog alertDialog = diag.create();
             alertDialog.show();
-
-
         }
         else
             Toast.makeText(getBaseContext(), "Press Back Again To Confirm.", Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
-
 
 }
