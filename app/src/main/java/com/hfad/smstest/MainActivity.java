@@ -42,9 +42,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,10 +51,12 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    Button sendSMS,clearSendFromList,ldSenders,contactsButton2,contactsButton;
+    Button sendSMS,clearSendFromList,clearSendToList,ldSenders,contactsButton2,contactsButton;
     public String phone, name ;
     public static ArrayList<String> setNum=new ArrayList<>();
     public static ArrayList<String> nameList=new ArrayList<>();
+    public static ArrayList<String> nameListToSend=new ArrayList<>();
+    public static ArrayList<String> setNumToSend=new ArrayList<>();
     EditText phoneNumber;
     TextView phoneNumber2;
     TextView toSend;
@@ -167,26 +167,61 @@ public class MainActivity extends AppCompatActivity {
             phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             if(sendto==true) {
-                phoneNumber.setText(phone);
-                Log.e("tempString",phone);
-                sendList.setText("Name[s] : " + name + "\n" + "Phone No[s]. : " + phone);
+                if(!nameListToSend.contains(name))
+                    nameListToSend.add(name);
+                else
+                    nameListToSend.remove(name);
+                if(!setNumToSend.contains(makenum(phone)))
+                    setNumToSend.add(makenum(phone));
+                else
+                    setNumToSend.remove(makenum(phone));
+
+                tinydb.putListString("setNumToSend", setNumToSend);
+                tinydb.putListString("nameListToSend",nameListToSend);
+
+                if(setNumToSend.size()!=0)
+                {
+                    phoneNumber.setText("" + setNumToSend);
+                    sendList.setText("Name[s] : " + nameListToSend + "\n\n" + "Phone No[s]. : " + setNumToSend);
+                }
+                else
+                {
+                    phoneNumber.setText("");
+                    sendList.setText("");
+                }
                 sendto=false;
             }
             if(sendfrom==true)
             {
                // Log.e("phone",phone );
                 if(!setNum.contains(makenum(phone)))
-                setNum.add(makenum(phone));
+                    setNum.add(makenum(phone));
+                else
+                    setNum.remove(makenum(phone));
+
+                if(!nameList.contains(name))
+                    nameList.add(name);
+                else
+                    nameList.remove(name);
+
                 setNum.removeAll(Collections.singleton(null));
                 setNum.removeAll(Collections.singleton(""));
                 nameList.removeAll(Collections.singleton(null));
                 nameList.removeAll(Collections.singleton(""));
-                phoneNumber2.setText(""+setNum);
-                if(!nameList.contains(name))
-                nameList.add(name);
+
                 tinydb.putListString("setNum", setNum);
                 tinydb.putListString("nameList",nameList);
-                sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
+
+                if(setNum.size()!=0)
+                {
+                    phoneNumber2.setText("" + setNum);
+                    sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
+                }
+                else
+                {
+                    phoneNumber2.setText("");
+                    sendList2.setText("");
+                }
                // Log.e("setnum",setNum);
                 sendfrom=false;
             }
@@ -206,13 +241,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sendList=(TextView)findViewById(R.id.sentList);
+        phoneNumber = (EditText) findViewById(R.id.editText);
+        sentFrom=(TextView)findViewById(R.id.sentFrom);
+        clearSendFromList=(Button)findViewById(R.id.clearSendFromList);
+        clearSendToList=(Button)findViewById(R.id.clearSendToList);
         Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
         stopService(startBgSMS);
         final TinyDB tinydb = new TinyDB(getApplicationContext());
         setNum=tinydb.getListString("setNum");
         nameList=tinydb.getListString("nameList");
+        setNumToSend=tinydb.getListString("setNumToSend");
+        nameListToSend=tinydb.getListString("nameListToSend");
         phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
         sendList2=(TextView)findViewById(R.id.sendFrom);
+        try {
+            if(setNumToSend.size()!=0)
+            {
+                phoneNumber.setText("" + setNumToSend);
+                sendList.setText("Name[s] : " + nameListToSend + "\n\n" + "Phone No[s]. : " + setNumToSend);
+            }
+        }
+        catch (Exception e) {
+        }
         try {
             if(setNum.size()!=0)
             {
@@ -222,10 +273,6 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (Exception e) {
         }
-        sendList=(TextView)findViewById(R.id.sentList);
-        phoneNumber = (EditText) findViewById(R.id.editText);
-        sentFrom=(TextView)findViewById(R.id.sentFrom);
-        clearSendFromList=(Button)findViewById(R.id.clearSendFromList);
 
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
        // getSupportActionBar().hide();
@@ -239,6 +286,35 @@ public class MainActivity extends AppCompatActivity {
 
         sendfrom=false;
         sendto=false;
+
+        clearSendToList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard(MainActivity.this);
+                final AlertDialog.Builder diagClear = new AlertDialog.Builder(MainActivity.this);
+                diagClear.setTitle("Confirmation");
+                diagClear.setMessage("Clear Send To List ? Press OK to clear.");
+                diagClear.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        setNum.clear();
+                        nameList.clear();
+                        tinydb.putListString("setNumToSend", setNumToSend);
+                        tinydb.putListString("nameListToSend",nameListToSend);
+                        phoneNumber.setText("");
+                        sendList.setText("");
+                    }
+                });
+                diagClear.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int id) {
+                        Toast.makeText(MainActivity.this, "List not cleared.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                AlertDialog alertDialog = diagClear.create();
+                alertDialog.show();
+            }
+        });
 
         phoneNumber.setOnTouchListener(new View.OnTouchListener()
         {
