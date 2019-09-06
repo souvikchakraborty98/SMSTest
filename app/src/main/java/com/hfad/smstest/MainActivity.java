@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -31,7 +32,6 @@ import android.support.v4.content.ContextCompat;
 import android.net.Uri;
 import android.content.Intent;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.util.Log;
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -58,13 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> nameList=new ArrayList<>();
     public static ArrayList<String> nameListToSend=new ArrayList<>();
     public static ArrayList<String> setNumToSend=new ArrayList<>();
-    EditText phoneNumber;
-    TextView phoneNumber2;
-    TextView toSend;
-    TextView sentFrom;
-    TextView sendList;
-    TextView sendList2;
-    TextView smsText;
+    TextView smsText,sendList2,sendList,sentFrom,toSend,info,info2;
     boolean  sendto,sendfrom;
     private static final int RESULT_PICK_CONTACT = 1234;
     public static int ldSendersFlag=0;
@@ -176,18 +170,21 @@ public class MainActivity extends AppCompatActivity {
                     setNumToSend.add(makenum(phone));
                 else
                     setNumToSend.remove(makenum(phone));
-
-                tinydb.putListString("setNumToSend", setNumToSend);
-                tinydb.putListString("nameListToSend",nameListToSend);
+                try {
+                    tinydb.putListString("setNumToSend", setNumToSend);
+                    tinydb.putListString("nameListToSend", nameListToSend);
+                }
+                catch (Exception e)
+                {
+                    Log.e("contactPicked: ", e.toString());
+                }
 
                 if(setNumToSend.size()!=0)
                 {
-                    phoneNumber.setText("" + setNumToSend);
                     sendList.setText("Name[s] : " + nameListToSend + "\n\n" + "Phone No[s]. : " + setNumToSend);
                 }
                 else
                 {
-                    phoneNumber.setText("");
                     sendList.setText("");
                 }
                 sendto=false;
@@ -215,12 +212,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if(setNum.size()!=0)
                 {
-                    phoneNumber2.setText("" + setNum);
                     sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
                 }
                 else
                 {
-                    phoneNumber2.setText("");
                     sendList2.setText("");
                 }
                // Log.e("setnum",setNum);
@@ -243,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sendList=(TextView)findViewById(R.id.sentList);
-        phoneNumber = (EditText) findViewById(R.id.editText);
         sentFrom=(TextView)findViewById(R.id.sentFrom);
         clearSendFromList=(Button)findViewById(R.id.clearSendFromList);
         clearSendToList=(Button)findViewById(R.id.clearSendToList);
@@ -254,25 +248,25 @@ public class MainActivity extends AppCompatActivity {
         nameList=tinydb.getListString("nameList");
         setNumToSend=tinydb.getListString("setNumToSend");
         nameListToSend=tinydb.getListString("nameListToSend");
-        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
         sendList2=(TextView)findViewById(R.id.sendFrom);
+        smsText = (TextView) findViewById(R.id.editText2);
         try {
             if(setNumToSend.size()!=0)
             {
-                phoneNumber.setText("" + setNumToSend);
                 sendList.setText("Name[s] : " + nameListToSend + "\n\n" + "Phone No[s]. : " + setNumToSend);
             }
         }
         catch (Exception e) {
+            Log.e("setNumToSend", e.toString() );
         }
         try {
             if(setNum.size()!=0)
             {
-                phoneNumber2.setText("" + setNum);
                 sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : " + setNum);
             }
         }
         catch (Exception e) {
+            Log.e("setNum", e.toString());
         }
 
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -302,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
                         nameListToSend.clear();
                         tinydb.putListString("setNumToSend", setNumToSend);
                         tinydb.putListString("nameListToSend",nameListToSend);
-                        phoneNumber.setText("");
                         sendList.setText("");
                     }
                 });
@@ -317,26 +310,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        phoneNumber.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View view, MotionEvent ev)
-            {
-                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Or..you could just try \"Load Contacts\" below ? :P" ,Toast.LENGTH_LONG);
-                abvKeyBrd.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 200);
-                abvKeyBrd.show();
-                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
-               // new VibratingToast(MainActivity.this, "You could just try \"Load Contacts\" below :P", Toast.LENGTH_SHORT);
-                return false;
-            }
-        });
-
         sendList.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 
                 //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
-                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" above", Toast.LENGTH_SHORT);
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Press \"Load Contacts\" below" ,Toast.LENGTH_SHORT);
+                ViewGroup group = (ViewGroup) abvKeyBrd.getView();
+                TextView messageTextView = (TextView) group.getChildAt(0);
+                messageTextView.setTextSize(20);
+                abvKeyBrd.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 200);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
 
             }
 
@@ -347,9 +332,12 @@ public class MainActivity extends AppCompatActivity {
         sendList2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
-                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_SHORT);
+                ViewGroup group = (ViewGroup) abvKeyBrd.getView();
+                TextView messageTextView = (TextView) group.getChildAt(0);
+                messageTextView.setTextSize(20);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
 
             }
 
@@ -358,9 +346,27 @@ public class MainActivity extends AppCompatActivity {
         toSend.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Press \"Load Contacts\" below" ,Toast.LENGTH_SHORT);
+                ViewGroup group = (ViewGroup) abvKeyBrd.getView();
+                TextView messageTextView = (TextView) group.getChildAt(0);
+                messageTextView.setTextSize(20);
+                abvKeyBrd.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 200);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
 
-                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" above" ,Toast.LENGTH_LONG).show();
-                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" above", Toast.LENGTH_SHORT);
+            }
+
+        });
+        smsText.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Will show the intercepted message" ,Toast.LENGTH_SHORT);
+                ViewGroup group = (ViewGroup) abvKeyBrd.getView();
+                TextView messageTextView = (TextView) group.getChildAt(0);
+                messageTextView.setTextSize(20);
+                abvKeyBrd.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 200);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
 
             }
 
@@ -369,13 +375,22 @@ public class MainActivity extends AppCompatActivity {
         sentFrom.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-                //Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_LONG).show();
-                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
+                Toast abvKeyBrd=Toast.makeText(MainActivity.this,"Press \"Load Contacts\" or \"Recent Senders\" below" ,Toast.LENGTH_SHORT);
+                ViewGroup group = (ViewGroup) abvKeyBrd.getView();
+                TextView messageTextView = (TextView) group.getChildAt(0);
+                messageTextView.setTextSize(20);
+                abvKeyBrd.show();
+                ((Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE)).vibrate(100);
             }
 
         });
         sim=(TextView)findViewById(R.id.SIM);
+        info=(TextView)findViewById((R.id.infoBar));
+        info2=(TextView)findViewById((R.id.infoBar2));
+        info.setText("To remove contacts selected by \"Load Contacts\" select them again!");
+        info.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_info_custom, 0, 0, 0);
+        info2.setText("To remove contacts selected by \"Load Contacts\" select them again!");
+        info2.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_info_custom, 0, 0, 0);
         sb = (Switch) findViewById(R.id.sim_switch);
         sb.setTextOff("SIM 2");
         sb.setTextOn("SIM 1");
@@ -460,11 +475,11 @@ public class MainActivity extends AppCompatActivity {
           try {
               Bundle extras = getIntent().getExtras();
               String[] savedExtra = extras.getStringArray("savedExtra");
-              String phno = extras.getString("phonenumber");
+              /*String phno = extras.getString("phonenumber");*/
               String sndlist = extras.getString("sendlist");
               String simState = extras.getString("SIMSTATUS");
               String OTPFLAG = extras.getString("otpCheck");
-              phoneNumber.setText(phno);
+             /* phoneNumber.setText(phno);*/
               if(simState.equals("SIM 1")) {
                   sb.setChecked(true);
                   sim.setText("SIM 1");
@@ -488,7 +503,6 @@ public class MainActivity extends AppCompatActivity {
               //  Log.e("savedExtra",savedExtra );
               if(setNum.size()==0) {
                   sendList2.setText("");
-                  phoneNumber2.setText("");
                   setNum.add("");
               }
               else {
@@ -509,7 +523,6 @@ public class MainActivity extends AppCompatActivity {
                   tinydb.putListString("setNum", setNum);
                   tinydb.putListString("nameList",nameList);
                   sendList2.setText("Name[s] : " + nameList + "\n\n" + "Phone No[s]. : "+setNum);
-                  phoneNumber2.setText(""+setNum);
 
               }
              // phoneNumber2.requestFocus();
@@ -544,14 +557,12 @@ public class MainActivity extends AppCompatActivity {
 
                 //  Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
 
-                /*if(!(phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString()))
-                {*/
                 if (flagOTP != 1) {
                     sms = smsText.getText().toString();
                     flagOTP = 0;
                 }
 
-                //String phoneNum = phoneNumber.getText().toString();
+
                 String simSub = sim.getText().toString();
                 if (simSub.equals("SIM 1"))
                     simNum = 0;
@@ -587,17 +598,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-            /*else
-                {
-                    Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
-                }*/
             }
         );
-
-
-
-       phoneNumber = (EditText) findViewById(R.id.editText);
-        phoneNumber2 = (TextView) findViewById(R.id.numToSendFrom);
 
         sendList=(TextView) findViewById(R.id.sentList);
         sendList2=(TextView)findViewById(R.id.sendFrom);
@@ -634,16 +636,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        phoneNumber2=(TextView)findViewById(R.id.numToSendFrom);
-        phoneNumber2.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-
-                //Toast.makeText(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT).show();
-                new VibratingToast(MainActivity.this, "Press \"Load Contacts\" or \"Recent Senders\" below", Toast.LENGTH_SHORT);
-            }
-
-        });
         ldSenders = (Button)findViewById(R.id.getSender);
         ldSenders.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -651,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
                 hideKeyboard(MainActivity.this);
                 Intent myIntent = new Intent(getBaseContext(),   recentSMS.class);
                 Bundle extras = new Bundle();
-                extras.putString("phonenumber",phoneNumber.getText().toString());
+               /* extras.putString("phonenumber",phoneNumber.getText().toString());*/
                 extras.putString("sendlist",sendList.getText().toString());
                 extras.putString("SIMSTATUS",sim.getText().toString());
                 extras.putString("otpCheck",Boolean.toString(sc.isChecked()));
@@ -676,7 +668,6 @@ public class MainActivity extends AppCompatActivity {
                         nameList.clear();
                         tinydb.putListString("setNum", setNum);
                         tinydb.putListString("nameList",nameList);
-                        phoneNumber2.setText("");
                         sendList2.setText("");
                     }
                 });
@@ -691,7 +682,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        smsText = (TextView) findViewById(R.id.editText2);
+
+
+        /*
         sendSMS = (Button) findViewById(R.id.btnSendSMS);
         sendSMS.setOnClickListener(new View.OnClickListener() {
 
@@ -738,7 +731,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
     }
 
@@ -751,6 +744,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final TinyDB tinydb=new TinyDB(getApplicationContext());
         switch (item.getItemId()) {
             case R.id.item1:
                 final AlertDialog.Builder diag = new AlertDialog.Builder(MainActivity.this);
@@ -760,6 +754,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         Intent intent = getIntent();
+                        setNumToSend.clear();
+                        setNum.clear();
+                        nameListToSend.clear();
+                        nameList.clear();
+                        tinydb.putListString("setNum", setNum);
+                        tinydb.putListString("nameList",nameList);
+                        tinydb.putListString("setNumToSend", setNumToSend);
+                        tinydb.putListString("nameListToSend",nameListToSend);
+
                         finish();
                         startActivity(intent);
                     }

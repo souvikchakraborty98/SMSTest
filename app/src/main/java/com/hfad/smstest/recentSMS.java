@@ -20,9 +20,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-
-import javax.crypto.AEADBadTagException;
 
 
 public class recentSMS extends AppCompatActivity {

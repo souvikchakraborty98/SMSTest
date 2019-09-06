@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollLayout"
+    android:background="@color/stat_colour"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:id="@+id/relLayout"
@@ -24,53 +25,91 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />-->
-
         <View
             android:id="@+id/View1"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#747272"
-            android:layout_below="@+id/sentList"
-            android:layout_marginTop="15dp"/>
+            android:layout_height="1dp"
+            android:background="#89B5D5"
+            android:layout_below="@+id/toSend"
+            />
         <View
             android:id="@+id/View2"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#747272"
-            android:layout_below="@+id/View1"
-            android:layout_marginTop="5dp"/>
+            android:layout_height="1dp"
+            android:background="#89B5D5"
+            android:layout_below="@+id/otp_switch"
+            />
+        <View
+            android:id="@+id/View3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#89B5D5"
+            android:layout_below="@+id/sentFrom"
 
-        <EditText
-            android:id="@+id/editText"
+            />
+        <View
+            android:id="@+id/View4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#89B5D5"
+            android:layout_below="@+id/ldContacts2" />
+
+        <TextView
+            android:id="@+id/toSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_border_transparent"
+            android:text="Sending To:-"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/clearSendToList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/toSend"
+            android:background="@drawable/ripple_button"
+            android:text="CLEAR LIST"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/sentList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/View1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_border_transparent"
+            android:textColorHint="@color/abc_primary_text_material_dark"
             android:hint="Enter Phone Number To Send To"
             android:textColor="@android:color/white"
-            android:textColorHint="@color/abc_primary_text_material_dark"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="20sp"
-            /><!--android:layout_below="@+id/textView1"-->
+            android:textSize="20sp" />
+
+
 
         <TextView
             android:id="@+id/editText2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editText"
-            android:layout_alignStart="@+id/editText"
-            android:layout_alignLeft="@+id/editText"
+            android:layout_below="@+id/sentList"
+            android:layout_alignStart="@+id/sentList"
+            android:layout_alignLeft="@+id/sentList"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:layout_alignEnd="@+id/editText"
-            android:layout_alignRight="@+id/editText"
+            android:layout_alignEnd="@+id/sentList"
+            android:layout_alignRight="@+id/sentList"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_border_transparent"
             android:hint="Message"
             android:textColorHint="@color/abc_primary_text_material_dark"
             android:textSize="20sp" />
 
-        <Button
+       <!-- <Button
             android:id="@+id/btnSendSMS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,13 +119,34 @@
             android:background="@drawable/rounded_border"
             android:text="Send SMS"
             android:textColor="@android:color/black"
+            android:textSize="15sp" />-->
+        <Button
+            android:id="@+id/ldContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/infoBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/ripple_button"
+            android:text="Load Contacts"
+            android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <TextView
+            android:id="@+id/infoBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editText2"
+            android:layout_marginTop="10dp"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <Switch
             android:id="@+id/sim_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btnSendSMS"
+            android:layout_below="@id/ldContacts"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
@@ -108,7 +168,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
-            android:theme="@style/SwitchTheme"
+            android:layout_marginBottom="10dp"
             android:checked="true"
             android:switchMinWidth="56dp"
             android:text="CHECK FOR OTP"
@@ -116,13 +176,14 @@
             android:textOff="NO"
             android:textOn="YES"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:theme="@style/SwitchTheme" />
 
         <TextView
             android:id="@+id/SIM"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSendSMS"
+            android:layout_below="@+id/ldContacts"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@id/sim_switch"
@@ -132,60 +193,13 @@
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/ldContacts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/editText2"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_border"
-            android:text="Load Contacts"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/toSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/otp_switch"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_border_transparent"
-            android:text="Sending To:-"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/clearSendToList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/otp_switch"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/toSend"
-            android:background="@drawable/rounded_border"
-            android:text="CLEAR LIST"
-            android:textColor="@android:color/black"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/sentList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/toSend"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/rounded_border_transparent"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/sentFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/View2"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/rounded_border_transparent"
             android:text="Sending From:-"
             android:textColor="@android:color/white"
@@ -198,9 +212,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/View2"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="32dp"
             android:layout_toRightOf="@id/sentFrom"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/ripple_button"
             android:text="CLEAR LIST"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
@@ -209,36 +223,35 @@
             android:id="@+id/sendFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sentFrom"
+            android:layout_below="@+id/View3"
             android:layout_marginTop="10dp"
             android:textCursorDrawable="@drawable/color_cursor"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/rounded_border_transparent"
+            android:textColorHint="@color/abc_primary_text_material_dark"
+            android:hint="Enter Phone Number To Send From"
+            android:layout_marginStart="10dp"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
+
         <TextView
-            android:id="@+id/numToSendFrom"
+            android:id="@+id/infoBar2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/sendFrom"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/rounded_border_transparent"
-            android:hint="Enter Phone Number To Send From "
-            android:phoneNumber="true"
-            android:textColorHint="@android:color/white"
-            android:textColor="@android:color/white"
+            android:layout_marginTop="10dp"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="20sp" />
-
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
         <Button
             android:id="@+id/ldContacts2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/numToSendFrom"
+            android:layout_below="@+id/infoBar2"
             android:layout_marginLeft="0dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/ripple_button"
             android:text="Load Contacts"
             android:textColor="@android:color/black"
             android:textSize="15sp"
@@ -248,12 +261,12 @@
             android:id="@+id/getSender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/numToSendFrom"
+            android:layout_below="@+id/infoBar2"
             android:layout_marginStart="5dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
             android:layout_toRightOf="@id/ldContacts2"
-            android:background="@drawable/rounded_border"
+            android:background="@drawable/ripple_button"
             android:text="RECENT SENDERS"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
