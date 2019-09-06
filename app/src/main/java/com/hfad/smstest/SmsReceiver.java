@@ -39,7 +39,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     String messageBody = smsMessage.getMessageBody();
                     //Log.e("message","" + messageBody);
-
+                    MainActivity.senderSelect=s;
                     //Pass the message text to interface
                     mListener.messageReceived(messageBody);
 

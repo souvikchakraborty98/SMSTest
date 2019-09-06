@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     Button sendSMS,clearSendFromList,clearSendToList,ldSenders,contactsButton2,contactsButton;
-    public String phone, name ;
+    public String phone, name;
+    public static String senderSelect;
     public static ArrayList<String> setNum=new ArrayList<>();
     public static ArrayList<String> nameList=new ArrayList<>();
     public static ArrayList<String> nameListToSend=new ArrayList<>();
@@ -524,12 +525,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void messageReceived(String messageText) {
                 smsText.setText(messageText);
-                String sms="";
+                String sms = "";
                 int flagOTP = 0;
-                 //Log.e("getdata setnum","" + messageText);
+                //Log.e("getdata setnum","" + messageText);
                 hideKeyboard(MainActivity.this);
-                if(otp_flag==1)
-                {
+                if (otp_flag == 1) {
                     String OTP_REGEX = "[0-9]{1,6}";
                     Pattern pattern = Pattern.compile(OTP_REGEX);
                     Matcher matcher = pattern.matcher(messageText);
@@ -542,49 +542,57 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-              //  Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
+                //  Toast.makeText(MainActivity.this,"OTP: "+ otp ,Toast.LENGTH_LONG).show();
 
-                if(!(phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString()))
-                {
-                    if(flagOTP!=1) {
-                        sms = smsText.getText().toString();
-                        flagOTP = 0;
-                    }
-
-                String phoneNum = phoneNumber.getText().toString();
-                String simSub=sim.getText().toString();
-                if(simSub.equals("SIM 1"))
-                    simNum=0;
-                else if(simSub.equals("SIM 2"))
-                    simNum=1;
-                if(!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(phoneNum)) {
-                    if (checkPermission()) {
-
-                        if ((phoneNum.length() >= 10) && (phoneNum.length() <= 17)) {
-                            try {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.getSmsManagerForSubscriptionId(simNum).sendTextMessage(phoneNum, null, sms, null, null);
-                                Toast.makeText(MainActivity.this, "SMS Sent", Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(MainActivity.this, "SMS NOT SENT. TRY AGAIN.", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(MainActivity.this, "DOMESTIC CALLS ONLY", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else {
-                        Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
-                    }
+                /*if(!(phoneNumber.getText()).toString().equals((phoneNumber2.getText()).toString()))
+                {*/
+                if (flagOTP != 1) {
+                    sms = smsText.getText().toString();
+                    flagOTP = 0;
                 }
-               // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
 
+                //String phoneNum = phoneNumber.getText().toString();
+                String simSub = sim.getText().toString();
+                if (simSub.equals("SIM 1"))
+                    simNum = 0;
+                else if (simSub.equals("SIM 2"))
+                    simNum = 1;
+                for (int i = 0; i < setNumToSend.size(); i++) {
+                    if (!senderSelect.equals(setNumToSend.get(i))) {
+                        if (!TextUtils.isEmpty(sms) && !TextUtils.isEmpty(setNumToSend.get(i))) {
+                            if (checkPermission()) {
+
+                                if ((setNumToSend.get(i).length() >= 10) && (setNumToSend.get(i).length() <= 17)) {
+                                    try {
+                                        SmsManager smsManager = SmsManager.getDefault();
+                                        smsManager.getSmsManagerForSubscriptionId(simNum).sendTextMessage(setNumToSend.get(i), null, sms, null, null);
+                                        Toast.makeText(MainActivity.this, "SMS(s) Sent", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(MainActivity.this, "SMS NOT SENT. TRY AGAIN.", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(MainActivity.this, "DOMESTIC CALLS ONLY", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else {
+                                Toast.makeText(MainActivity.this, "Permission denied", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        // Toast.makeText(MainActivity.this,"Message: "+messageText,Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
             }
-            else
+            /*else
                 {
                     Toast.makeText(MainActivity.this, "SENDING TO SAME NUMBER LOOP", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
-        });
+        );
 
 
 
