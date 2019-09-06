@@ -297,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
                 diagClear.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        setNum.clear();
-                        nameList.clear();
+                        setNumToSend.clear();
+                        nameListToSend.clear();
                         tinydb.putListString("setNumToSend", setNumToSend);
                         tinydb.putListString("nameListToSend",nameListToSend);
                         phoneNumber.setText("");
