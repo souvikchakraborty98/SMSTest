@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ASF</string>
-    <string name="dialog_message">ASF.\nAutomated SMS Forwarding and more!\nHappens in the background quick and automatically
+    <string name="dialog_message"><b>ASF.</b>\n<i>Automated SMS Forwarding and more!</i>\nHappens in the background quick and automatically
         according to user defined rules in the app. This is still under
-        development with many more upcoming features like scheduling, multiple rules,encryption. etc\n© Souvik Chakraborty,2019\ngithub.com/souvikchakraborty98/SMSTest</string>
+        development with many more upcoming features like scheduling, <strike> multiple rules </strike>,encryption. etc\nReach me at:-\nsouvikchakraborty98.github.io \n <b>© Souvik Chakraborty,2019</b></string>
     <string name="refApp">Refresh App</string>
     <string name="about">About</string>
+    <string name="settings">Settings</string>
 </resources>

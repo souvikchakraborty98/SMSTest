@@ -3,6 +3,7 @@ package com.hfad.smstest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,21 +19,19 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
 import java.util.ArrayList;
 
 
 public class recentSMS extends AppCompatActivity {
     //LinkedList<String> senderList = new LinkedList<String>();
     ArrayList<DataModel> senderList=new ArrayList<DataModel>();
-    ArrayList<String> setno=new ArrayList<String>();
     ListView listView;
-    int c;
     String simStat,oTpFlag,sndlist,phno;
     DataModel temp1;
     private RelativeLayout mRelativeLayout;
     private CustomAdapter arrayAdapter;
     ActionBar actBar;
+    Button doneButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +39,12 @@ public class recentSMS extends AppCompatActivity {
        // requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getSupportActionBar().hide();
         actBar=getSupportActionBar();
-        actBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1D1C1C")));
+        try {
+            actBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#1D1C1C")));
+        }
+        catch (Exception e){
+            Log.e("onCreate: ", e.toString());
+        }
         Window window = recentSMS.this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -50,7 +54,6 @@ public class recentSMS extends AppCompatActivity {
         mRelativeLayout.setVisibility(View.VISIBLE);
         new PrepareData().execute();
     }
-
 
     @Override
     public void onBackPressed() {
@@ -180,15 +183,19 @@ public class recentSMS extends AppCompatActivity {
             listView = (ListView) findViewById(R.id.listview);
             arrayAdapter = new CustomAdapter(senderList, getApplicationContext());
             listView.setAdapter(arrayAdapter);
-            /*listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-            listView.setItemsCanFocus(false);*/
             final TinyDB tinydb = new TinyDB(getApplicationContext());
+            doneButton=(Button)findViewById(R.id.doneButton);
+            doneButton.setEnabled(false);
+            doneButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     temp1 = senderList.get(position);
+                    doneButton = (Button) findViewById(R.id.doneButton);
+                    doneButton.setEnabled(true);
+                    doneButton.getBackground().setColorFilter(null);
                     DataModel dataModel= senderList.get(position);
                     dataModel.checked = !dataModel.checked;
                     arrayAdapter.notifyDataSetChanged();
@@ -196,7 +203,6 @@ public class recentSMS extends AppCompatActivity {
                     final ArrayList<String> selectedContacts=new ArrayList<>();
                     final Intent myIntent = new Intent(getBaseContext(), MainActivity.class);
                     final Bundle extras = new Bundle();
-                    Button doneButton = (Button) findViewById(R.id.doneButton);
                     doneButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

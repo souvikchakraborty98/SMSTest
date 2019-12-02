@@ -26,6 +26,7 @@
         android:background="@drawable/ripple_button"
         android:text="DONE"
         android:textColor="@android:color/black"
+        android:drawableStart="@drawable/ic_done_custom"
         android:textSize="15sp" />
 
     <ListView

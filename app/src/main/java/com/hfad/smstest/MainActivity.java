@@ -1,4 +1,5 @@
 package com.hfad.smstest;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public static int ldSendersFlag=0;
     Switch sb,sc;
     TextView sim;
-    int simNum,otp_flag;
+    static int simNum,otp_flag;
     SharedPreferences prefs;
 
     public String makenum(String s)
@@ -240,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
         sendList=(TextView)findViewById(R.id.sentList);
         sentFrom=(TextView)findViewById(R.id.sentFrom);
         clearSendFromList=(Button)findViewById(R.id.clearSendFromList);
+       // clearSendFromList.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_clear_custom, 0, 0, 0);
         clearSendToList=(Button)findViewById(R.id.clearSendToList);
+       // clearSendToList.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_clear_custom, 0, 0, 0);
         Intent startBgSMS = new Intent(MainActivity.this, SMSBackgroundService.class);
         stopService(startBgSMS);
         final TinyDB tinydb = new TinyDB(getApplicationContext());
@@ -396,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
         sb.setTextOn("SIM 1");
         sc=(Switch) findViewById(R.id.otp_switch);
         prefs = getSharedPreferences("com.hfad.smstest", 0);
-        String simVariable = prefs.getString("simSubID", "SIM 1");
+        final String simVariable = prefs.getString("simSubID", "SIM 1");
         String checkOTP= prefs.getString("checkForOtp","0");
         Log.e("sim id", simVariable);
 
@@ -784,6 +787,10 @@ public class MainActivity extends AppCompatActivity {
                 d.show();
                 ((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance()); //only for URL handling
                 return true;
+            case R.id.item3:
+                Intent newIntent = new Intent(getBaseContext(),   settings.class);
+                startActivity(newIntent);
+
             default:
                 return super.onOptionsItemSelected(item);
         }
